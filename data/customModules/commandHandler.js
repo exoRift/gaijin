@@ -75,6 +75,13 @@ class CommandHandler {
     })
   }
   _generateArgs (command, content) {
+    console.log(new RegExp(command.args
+      ? command.args.reduce((a, e) => {
+        const last = e.name === command.args[command.args.length - 1].name
+        return a + `(.+${last ? '' : '?'})${e.mand ? '' : '?'}` +
+          (last ? '' : '\\' + (e.delim || 's') + (e.mand ? '' : '?'))
+      }, '')
+      : ' '))
     return new RegExp(command.args
       ? command.args.reduce((a, e) => {
         const last = e.name === command.args[command.args.length - 1].name

@@ -546,13 +546,11 @@ module.exports = (client, knex) => {
         fetchDB: true,
         action: (msg, [action, name, content], { user }) => {
           const note = user.notes.find(n => n.name === name)
-          console.log(action)
           switch (action) {
             case 'view':
               if (note) return `*${note.name}*\n${note.desc}`
               else throw Error('Note doesn\'t exist.')
             case 'set':
-              console.log(1)
               if (content === undefined) throw Error('Invalid content supplied.')
               user.notes.push({
                 name: name,
