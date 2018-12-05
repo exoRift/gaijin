@@ -164,9 +164,10 @@ module.exports = (client, knex) => {
               const content = `**${item}` +
               // ARG COMPILER
                 (args
-                  ? args.reduce((a, e) =>
-                    (a + (e.mand ? `<${e.name}>` : `(${e.name})`) + (e.delim || ' ')).slice(0, e.name === args[args.length - 1].name ? 0 : (-1 * (e.delim ? e.delim.length : 1))), ' '
-                  )
+                  ? args.reduce((a, e) => {
+                    const content = a + (e.mand ? `<${e.name}>` : `(${e.name})`) + (e.delim || ' ')
+                    return e.name === args[args.length - 1].name ? content.slice(0, e.delim ? e.delim.length : 1) : content
+                  }, ' ')
                   // DESCRIPTION
                   : '') + `** - *${this._commands[item].desc}*`
               const tern = fields[fields.length - 1].length + content.length > 1024 ? fields.length : fields.length - 1
