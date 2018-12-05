@@ -47,7 +47,6 @@ class CommandHandler {
         id: msg.author.id
       }
     })
-    console.log(user)
     // RUN COMMAND
     const result = await command.action.call(this, msg, !args || args.slice(1), {
       user,

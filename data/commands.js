@@ -543,6 +543,7 @@ module.exports = (client, knex) => {
       notes: {
         desc: 'View, edit, and manage personal notes',
         args: [{ name: 'action (view, set, delete) (Nothing to list all)' }, { name: 'name' }, { name: 'content' }],
+        fetchDB: true,
         action: (msg, [action, name, content], { user }) => {
           const note = user.notes.find(n => n.name === name)
           switch (action) {
@@ -586,6 +587,7 @@ module.exports = (client, knex) => {
       reminders: {
         desc: 'View, edit, and manage personal reminders which the bot will DM to you when the date is reached',
         args: [{ name: 'action (view, set, delete) (Nothing to list all)' }, { name: 'name' }, { name: 'content' }],
+        fetchDB: true,
         action: (msg, [action, name, content], { user }) => {
           const reminder = user.reminders.find(r => r.name === name)
           switch (action) {

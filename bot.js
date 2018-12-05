@@ -15,7 +15,6 @@ const commandClient = new CommandHandler(client, process.env.ADMIN, knex)
 const dbl = new (require('dblapi.js'))(process.env.DBLTOKEN, client)
 
 function showError (err, msg, response) {
-  console.log(err) // DEBUG
   if (response && typeof response === 'string' && err.code === 50035) {
     msg.channel.createMessage({
       content: 'Text was too long, sent as a file instead.',
