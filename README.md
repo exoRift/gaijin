@@ -15,15 +15,27 @@ When you construct a new date, it's the UTC timezone. I'm basically transforming
 
 # Variable Abbreviations
 `set` - settings
+
 `msg` - message
+
 `args` - arguments
+
 `delim` - delimiter
+
 `num` - number
+
 `rsp` - response
+
 `ver` - version
+
 `punc` - punctuation
+
 `res` - result
+
 `d`   - date
+
 `err` - error
+
 `cont` - content
+
 `mand` - mandatory
