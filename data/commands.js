@@ -166,7 +166,7 @@ module.exports = (client, knex) => {
                 (args
                   ? args.reduce((a, e) => {
                     const content = a + (e.mand ? `<${e.name}>` : `(${e.name})`) + (e.delim || ' ')
-                    return e.name === args[args.length - 1].name ? content.slice(0, e.delim ? e.delim.length : 1) : content
+                    return e.name === args[args.length - 1].name ? -1 * content.slice(0, e.delim ? e.delim.length : 1) : content
                   }, ' ')
                   // DESCRIPTION
                   : '') + `** - *${this._commands[item].desc}*`
