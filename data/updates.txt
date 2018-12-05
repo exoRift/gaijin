@@ -1,0 +1,213 @@
+0.1.8 \ TBD
+-----
+COMPLETE CODE REWRITE
+Code is now in a GitHub repository
+Added the GitHub link to help
+Added 2 new commands:
+	`encode`
+	`decode`
+Rearranged the command order
+Created an algorithm to auto-create the Botlist HTML file command data
+There are too many fixes and improvements to list, so just enjoy knowing this version is significantly better
+Coming soon: `demojify`
+Improved setting initialization
+The EULA was completely removed
+More update note fixes
+Repeat no longer is 1 more than the number provided. I realized people found this annoying|
+0.1.7 \ 8/15/18
+-----
+Fixed some problems
+Empty profiles will now clear on bot startup
+Added renaming to notes and reminders
+Deleting notes and reminders will now tell you if it was deleted or not|
+0.1.6 \ 8/7/18
+-----
+Added keys! What are keys, you may ask? Well, by using ${KEYNAME}, you can use shortcuts for things you wouldn't have to type manually. For example, ${LAST} will give you the last message the bot sent in the channel.
+Keys:
+	`LAST`
+	`DATE`
+	`IN <Number of hours>`
+You now no longer need to accept the EULA. It's written in the help menu
+Updated database system
+Changed some global variables to locals
+Improved flexibility of ping command to make possibility for sharding
+Fixed loops to be more consistent
+Added 2 commands:
+	`dblwidget`
+	`shards`
+General code improvements|
+0.1.5 \ 7/22/18
+-----
+Added a command: `replacespace`|
+0.1.4 \ 7/19/18
+-----
+Added a length checker to `noformat`
+Improved consonants and vowels
+Updated code with some maps instead of forEaches
+Added ? and ! to `emojify`|
+0.1.3 \ 7/15/18
+-----
+Fixed some errors in the update notes
+Adjusted help menu
+Improved stability on startup
+Lots of code improvements
+Fixed bug where `noformat` wouldn't work properly|
+0.1.2 \ 7/10/18
+-----
+Improved caps word
+Added a new command:
+	`noformat`
+Fixed bug where the help menu wouldn't edit
+Added total amount of pages to help menu
+The time needed before the bot edits the help menu has been increased from 11 seconds to 15
+Fixed bug where bot would try to edit a help menu from another server
+Improved lastMessage system|
+0.1.1 \ 7/5/18
+-----
+General improvements
+Fixed an argument error in the help menu
+Added a command:
+	`tempconvert`
+	`ascii`
+Added a length checker to emojify
+Added a secret message to the math command|
+0.1.0 \ 6/28/18
+-----
+Fixed problem where reminder dates would show incorrectly
+Improved some core mechanics
+Fixed problem in help menu
+Bot will now tell you if you have no note/reminders when listing them
+Fixed a problem that would crash the bot on a PM
+Fixed the fact I forgot to remove the delete from declining the EULA|
+0.0.9 \ 6/27/18
+-----
+Indices is now separated by Vertical Bar/Pipe
+Fixed bug where you couldn't delete or view reminders and notes that had spaces in the titles
+The `eula` command will no longer react with the custom emoji in servers where externalEmojis was disabled
+The date in reminders view is now human
+Bot will not longer try to send a message in a channel where it has no perms
+Fixed `scramble` command
+You can now mention the bot instead of the prefix if you'd like|
+0.0.8 \ 6/26/18
+-----
+The `resources` command no longer has embeds
+Removed an unnecessary console log
+Added a new command:
+	`date`
+Due to the fact that I wanted to keep the bot permissionless, the `eula` command will no longer delete the user's command
+Fixed bug where capital letters would not be emojis with the `emojify` command
+Fixed bug where notes would not add a new line after each note
+The `differences` command is now more accurate
+Added pages to the help command so it doesn't take up as much room. Use =help # to choose a page. help by itself will give you page 1. If you open the help menu and change the page before 10 seconds of the first one, the message will be edited rather than a new one being created
+Optimized code
+Fixed a bug with `replace` that caused the bot to crash
+The bot will no longer display the updates if the version provided is not a version (Invalid versions will still take you to the latest)
+You can now "Exact" and "Bland" `difference` check with difference where bland look at the whole word while exact looks at each character|
+0.0.7 \ 6/21/18
+-----
+Optimized the flip reverse command
+Fixed some requirements
+Added a new resource: JS/HTML Beautifier
+Added some more commands:
+	`eula`
+	`say`
+	`reminders`
+	`notes`
+	`syntax`
+Added an owner only disconnect command for maintenance
+Changed status from "Playing" to "Listening to"
+Adjusted the help menu
+Updated replace command to be more efficient
+Server count is now posted to discordbots.org|
+0.0.6 \ 6/9/18
+-----
+Changed OAuth link to bot page
+Optimized some code
+Fixed some errors in commands and the help menu|
+0.0.5 \ 6/7/18
+-----
+Fixed an error in the help menu
+Fixed an error in `updates`|
+0.0.4 \ 6/7/18
+-----
+Updates will now be sent in codeblocks and the current version updates will be in color
+While unable to write the color conversion command, sadly, it will, instead, be the `resources` command
+Added Commands:
+	`resources`
+	`repeat`
+	`emojify`
+Fixed bug where `undouble` wasn't working properly
+Gaijin will now alert you if your message is too long
+As a request from discordbots.org, Gaijin will no longer accept commands from bots|
+0.0.3 \ 6/5/18
+-----
+Fixed some base code issues
+Fixed bug where the `binary` and `morse` commands would return "undefined" on numbers
+Fixed a typo in the updates
+Added some more commands:
+	`indices`
+	`length`
+	`circle`
+	`aesthetic`
+	`double`
+	`difcheck`
+	`amount`
+	`decorrupt`
+	`unmorse`
+	`unbinary`
+	`deleet`
+	`unflip`
+	`uncircle`
+	`unaesthetic`
+	`undouble`
+Planned Commands:
+	Converting different color codes
+	`emojify`
+Fixed some variables and variable inconsistencies|
+0.0.2 \ 5/31/18
+-----
+Fixed 2 aspects in the help menu
+Optimized some code
+Fixed an error in the updates
+Added some more commands:
+	`leet`
+	`vowels`
+	`consonants`
+	`morse`
+	`binary`
+	`choose`
+Planned commands coming next update:
+	`decorrupt`
+	`unmorse`
+	`unbinary`
+	`deleet`
+	`unflip`
+	`circle`
+	`aesthetic`
+	`double`
+	`indices`
+Added dates to updates|
+0.0.1 \ 5/29/18
+-----
+Added some base commands
+	Commands:
+		`ping`
+		`help`
+		`updates`
+		`caps`
+			`all`
+			`none`
+			`sentence`
+			`word`
+			`rand`
+		`rand`
+		`math`
+		`space`
+		`scramble`
+		`replace`
+		`corrupt`
+		`flip`
+			`vertical`
+			`horizontal`
+			`reverse`|
+	A LOT more to come!
