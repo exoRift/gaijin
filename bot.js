@@ -12,7 +12,7 @@ const knex = new QueryBuilder({
 })
 const CommandHandler = require('./data/customModules/commandHandler.js')
 const commandClient = new CommandHandler(client, process.env.ADMIN, knex)
-/* const dbl = new (require('dblapi.js'))(process.env.DBLTOKEN, client) */
+const dbl = new (require('dblapi.js'))(process.env.DBLTOKEN, client)
 
 function showError (err, msg, response) {
   console.log(err) // DEBUG
@@ -32,36 +32,38 @@ function connect (count) {
 }
 
 // SETUPS
-knex.createTable({
-  name: 'users',
-  columns: [
-    {
-      name: 'id',
-      type: 'string',
-      primary: true
-    },
-    {
-      name: 'notes',
-      type: 'text',
-      default: '[]'
-    },
-    {
-      name: 'reminders',
-      type: 'text',
-      default: '[]'
-    }
-  ]
-}).catch(ignore => ignore)
-commandClient.registerCommands(require('./data/commands.js'))
+(async function () {
+  await knex.createTable({
+    name: 'users',
+    columns: [
+      {
+        name: 'id',
+        type: 'string',
+        primary: true
+      },
+      {
+        name: 'notes',
+        type: 'text',
+        default: '[]'
+      },
+      {
+        name: 'reminders',
+        type: 'text',
+        default: '[]'
+      }
+    ]
+  }).catch(ignore => ignore)
+  commandClient.registerCommands(require('./data/commands.js'))
 
-// DB CLEAN
-knex.delete({
-  table: 'users',
-  where: {
-    notes: '[]',
-    reminders: '[]'
-  }
-}).then(console.log('Database cleaned'))
+  // DB CLEAN
+  knex.delete({
+    table: 'users',
+    where: {
+      notes: '[]',
+      reminders: '[]'
+    }
+  }).then(console.log('Database cleaned'))
+})()
 
 // SHARD READY
 client.on('shardReady', shard => {
@@ -70,7 +72,7 @@ client.on('shardReady', shard => {
     name: `Prefix: '${process.env.PREFIX}'`,
     type: 2
   })
-  /* dbl.postStats(client.guilds.size, shard, client.shards.size) */
+  dbl.postStats(client.guilds.size, shard, client.shards.size)
 })
 
 // MESSAGE RECIEVED
