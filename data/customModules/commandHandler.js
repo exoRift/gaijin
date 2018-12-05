@@ -31,6 +31,7 @@ class CommandHandler {
     if (command.private && msg.author.id !== this._admin) throw Error('This command is either temporarily disabled, or private.')
     // SPLIT ARGS
     const args = this._generateArgs(command, msg.content)
+    console.log(args)
     // INVALID ARGS
     if (command.args && !args) throw Error('Invalid arguments. Reference the help menu.')
     // CREATE DB INDEX IF IT DOESN'T EXIST
