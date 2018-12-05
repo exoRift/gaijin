@@ -1,4 +1,4 @@
-0.1.8 \ TBD
+0.1.8 \ 12/4/18
 -----
 COMPLETE CODE REWRITE
 Code is now in a GitHub repository

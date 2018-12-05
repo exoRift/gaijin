@@ -542,15 +542,18 @@ module.exports = (client, knex) => {
       },
       notes: {
         desc: 'View, edit, and manage personal notes',
-        args: [{ name: 'action (view, set, delete) (Nothing to list all)' }, { name: 'name' }, { name: 'content' }],
+        args: [{ name: 'action (view, set, delete) (Nothing to list all)' }, { name: 'name', delim: '|' }, { name: 'content' }],
         fetchDB: true,
         action: (msg, [action, name, content], { user }) => {
           const note = user.notes.find(n => n.name === name)
+          console.log(action)
           switch (action) {
             case 'view':
               if (note) return `*${note.name}*\n${note.desc}`
               else throw Error('Note doesn\'t exist.')
             case 'set':
+              console.log(1)
+              if (content === undefined) throw Error('Invalid content supplied.')
               user.notes.push({
                 name: name,
                 desc: content,
@@ -586,18 +589,20 @@ module.exports = (client, knex) => {
       },
       reminders: {
         desc: 'View, edit, and manage personal reminders which the bot will DM to you when the date is reached',
-        args: [{ name: 'action (view, set, delete) (Nothing to list all)' }, { name: 'name' }, { name: 'content' }],
+        args: [{ name: 'action (view, set, delete) (Nothing to list all)' }, { name: 'name', delim: '|' }, { name: 'content', delim: '|' }, { name: 'date' }],
         fetchDB: true,
-        action: (msg, [action, name, content], { user }) => {
+        action: (msg, [action, name, content, date], { user }) => {
           const reminder = user.reminders.find(r => r.name === name)
           switch (action) {
             case 'view':
               if (reminder) return `*${reminder.name}*\n${reminder.desc}\n**${new Date(reminder.date).toString()}**`
               else throw Error('Reminder doesn\'t exist.')
             case 'set':
+              if (content === undefined || (date instanceof Date ? isNaN(date.getTime()) : true)) throw Error('Invalid content or date supplied.')
               user.reminders.push({
                 name: name,
                 desc: content,
+                date: date,
                 defMsg: msgLinkCompile(msg)
               })
               knex.update({
