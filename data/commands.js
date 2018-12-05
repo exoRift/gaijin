@@ -159,12 +159,13 @@ module.exports = (client, knex) => {
           for (const item in this._commands) {
             // PRIVATE COMMAND CHECK
             if (!this._commands[item].private) {
+              const args = this._commands[item].args
               // NAME
               const content = `**${item}` +
               // ARG COMPILER
-                (this._commands[item].args
-                  ? this._commands[item].args.reduce((a, e) =>
-                    (a + (e.mand ? `<${e.name}>` : `(${e.name})`) + (e.delim || ' ') + console.log(e.delim)).slice(0, -1 * (e.delim ? e.delim.length : 1)), ' '
+                (args
+                  ? args.reduce((a, e) =>
+                    (a + (e.mand ? `<${e.name}>` : `(${e.name})`) + (e.delim || ' ')).slice(0, e.name === args[args.length - 1].name ? (-1 * (e.delim ? e.delim.length : 1)) : 0), ' '
                   )
                   // DESCRIPTION
                   : '') + `** - *${this._commands[item].desc}*`
