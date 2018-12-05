@@ -31,7 +31,6 @@ class CommandHandler {
     if (command.private && msg.author.id !== this._admin) throw Error('This command is either temporarily disabled, or private.')
     // SPLIT ARGS
     const args = this._generateArgs(command, msg.content)
-    console.log(args)
     // INVALID ARGS
     if (command.args && !args) throw Error('Invalid arguments. Reference the help menu.')
     // CREATE DB INDEX IF IT DOESN'T EXIST
@@ -76,14 +75,6 @@ class CommandHandler {
     })
   }
   _generateArgs (command, content) {
-    console.log(new RegExp(command.args
-      ? command.args.reduce((a, e) => {
-        const first = e.name === command.args[0].name
-        const last = e.name === command.args[command.args.length - 1].name
-        return a + `${first && !e.mand ? '(?:' : ''}(.+)${e.mand ? '' : (first ? '' : '?')}` +
-          (last ? '' : '\\' + (e.delim || 's') + (e.mand ? '' : (first ? '' : '?'))) + (first && !e.mand ? ')?' : '')
-      }, '')
-      : ' '))
     return new RegExp(command.args
       ? command.args.reduce((a, e) => {
         const first = e.name === command.args[0].name

@@ -165,7 +165,7 @@ module.exports = (client, knex) => {
               // ARG COMPILER
                 (args
                   ? args.reduce((a, e) =>
-                    (a + (e.mand ? `<${e.name}>` : `(${e.name})`) + (e.delim || ' ')).slice(0, e.name === args[args.length - 1].name ? (-1 * (e.delim ? e.delim.length : 1)) : 0), ' '
+                    (a + (e.mand ? `<${e.name}>` : `(${e.name})`) + (e.delim || ' ')).slice(0, e.name === args[args.length - 1].name ? 0 : (-1 * (e.delim ? e.delim.length : 1))), ' '
                   )
                   // DESCRIPTION
                   : '') + `** - *${this._commands[item].desc}*`
@@ -546,7 +546,6 @@ module.exports = (client, knex) => {
         args: [{ name: 'action (view, set, delete) (Nothing to list all)' }, { name: 'name', delim: '|' }, { name: 'content' }],
         fetchDB: true,
         action: (msg, [action, name, content], { user }) => {
-          console.log(action)
           const note = user.notes.find(n => n.name === name)
           switch (action) {
             case 'view':
