@@ -80,8 +80,8 @@ class CommandHandler {
       ? command.args.reduce((a, e) => {
         const first = e.name === command.args[0].name
         const last = e.name === command.args[command.args.length - 1].name
-        return a + `${first && !e.mand ? '(?:' : ''}(.+)${first && !e.mand ? ')' : ''}${e.mand ? '' : '?'}` +
-          (last ? '' : '\\' + (e.delim || 's') + (e.mand ? '' : '?'))
+        return a + `${first && !e.mand ? '(?:' : ''}(.+)${e.mand ? '' : '?'}${first && !e.mand ? ')' : ''}` +
+          (last || first ? '' : '\\' + (e.delim || 's') + (e.mand ? '' : '?'))
       }, '')
       : ' '))
     return new RegExp(command.args
