@@ -2,7 +2,7 @@ class CommandHandler {
   constructor (client, adminID, knex) {
     this._client = client
     this._admin = adminID
-    this._waits = {}
+    this._awaits = {}
     this._knex = knex
   }
 
@@ -16,13 +16,14 @@ class CommandHandler {
     // KEYS
     msg.content = this._replaceKeys(msg, prefix)
     // FIND COMMAND OR AWAITED COMMAND
-    let awaited = this._waits[msg.channel.id + msg.author.id]
+    let awaited = this._awaits[msg.channel.id + msg.author.id]
     // IS THE AWAIT VALID?
     if (awaited) {
-      if ((Date.now() - awaited.date > awaited.time || !awaited.check(msg)) && !awaited.used) {
+      if ((Date.now() - awaited.date > awaited.time) || awaited.used) {
         awaited = undefined
-        delete this._waits[msg.channel.id + msg.author.id]
+        delete this._awaits[msg.channel.id + msg.author.id]
       }
+      if (awaited && !awaited.check(msg)) awaited = undefined
     }
     const command = awaited || this._commands[msg.content.substring(prefix.length).split(' ')[0].toLowerCase()]
     // NO COMMAND FOUND
@@ -56,7 +57,7 @@ class CommandHandler {
     const { content, embed, wait, file } = result
     // RESULT WAITS FOR A RESPONSE
     if (wait && !awaited) this._writeAwait(msg, wait)
-    if (wait && !wait.refresh) this._waits[msg.channel.id + msg.author.id].used = true
+    if (wait && !wait.refresh) this._awaits[msg.channel.id + msg.author.id].used = true
     return content || embed || file ? { content, embed, file } : undefined
   }
   async registerCommands (commandFunction) {
@@ -86,7 +87,7 @@ class CommandHandler {
   }
   async _writeWait (msg, data) {
     data.date = Date.now()
-    this._waits[msg.channel.id + msg.author.id] = data
+    this._awaits[msg.channel.id + msg.author.id] = data
     return data
   }
 }
