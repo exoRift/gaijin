@@ -49,6 +49,7 @@ class CommandHandler {
         id: msg.author.id
       }
     })
+    console.log(args)
     // RUN COMMAND
     const result = await command.action.call(this, msg, !args || args.slice(1), {
       user,
@@ -77,6 +78,15 @@ class CommandHandler {
     })
   }
   _generateArgs (command, content) {
+    console.log(content)
+    console.log(new RegExp(command.args
+      ? command.args.reduce((a, e) => {
+        const first = e.name === command.args[0].name
+        const last = e.name === command.args[command.args.length - 1].name
+        return a + `${first && !e.mand ? '(?:' : ''}(.+)${e.mand ? '' : (first ? '' : '?')}` +
+          (last ? '' : '\\' + (e.delim || 's') + (e.mand ? '' : (first ? '' : '?'))) + (first && !e.mand ? ')?' : '')
+      }, '')
+      : ' ', 's'))
     return new RegExp(command.args
       ? command.args.reduce((a, e) => {
         const first = e.name === command.args[0].name
@@ -84,7 +94,7 @@ class CommandHandler {
         return a + `${first && !e.mand ? '(?:' : ''}(.+)${e.mand ? '' : (first ? '' : '?')}` +
           (last ? '' : '\\' + (e.delim || 's') + (e.mand ? '' : (first ? '' : '?'))) + (first && !e.mand ? ')?' : '')
       }, '')
-      : ' ').exec(content.split(' ').slice(1).join(' '))
+      : ' ', 's').exec(content.split(' ').slice(1).join(' '))
   }
   async _writeWait (msg, data) {
     data.date = Date.now()
