@@ -11,7 +11,7 @@ const knex = new QueryBuilder({
   }
 })
 const CommandHandler = require('./data/customModules/commandHandler.js')
-const commandClient = new CommandHandler(client, process.env.ADMIN, knex)
+const commandClient = new CommandHandler(client, process.env.ADMIN, knex, process.env.TABLE)
 const dbl = new (require('dblapi.js'))(process.env.DBLTOKEN, client)
 
 function showError (err, msg, response) {
@@ -33,7 +33,7 @@ function connect (count) {
 // SETUPS
 (async function () {
   await knex.createTable({
-    name: 'users',
+    name: process.env.TABLE,
     columns: [
       {
         name: 'id',
@@ -56,7 +56,7 @@ function connect (count) {
 
   // DB CLEAN
   knex.delete({
-    table: 'users',
+    table: process.env.TABLE,
     where: {
       notes: '[]',
       reminders: '[]'
@@ -79,7 +79,7 @@ client.on('messageCreate', msg => {
   // PREVENTING BOT LOOPING
   if (msg.author.bot) return
   // HANDLE
-  commandClient.handle(msg, process.env.PREFIX, knex).then(res => {
+  commandClient.handle(msg, process.env.PREFIX).then(res => {
     if (!res) return
     const { content, embed, file } = (typeof res === 'string' ? { content: res } : res)
     msg.channel.createMessage({ content, embed }, file).catch(err => showError(err, msg, res))
@@ -94,7 +94,7 @@ client.on('shardDisconnect', shard => {
 
 // REMINDERS CHECK
 setInterval(() => {
-  knex.select('users').then(users => {
+  knex.select(process.env.TABLE).then(users => {
     if (!users) return
     (async function (users) {
       users.forEach((user, row) => {
@@ -103,7 +103,7 @@ setInterval(() => {
             client.users.get(user.id).getDMChannel().then(channel => channel.createMessage(`__REMINDER__:\n**${reminder.name}**\n${reminder.desc}\n-*${new Date(reminder.date).toString()}*`)).then(() => {
               delete user.reminders[index]
               knex.update({
-                table: 'users',
+                table: process.env.TABLE,
                 where: {
                   id: user.id
                 },

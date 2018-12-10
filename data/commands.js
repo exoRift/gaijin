@@ -175,7 +175,7 @@ module.exports = (client, knex) => {
               fields[tern] = fields[tern].concat(fields[tern].length ? '\n' : '', content)
             }
           }
-          fields.push('**Keys:**\n*Inputs key values into command (IN requires a number)*\n\n' + this._keys.reduce((a, e) => `${a}**${e.key}** - *${e.description}*\n`, ''))
+          fields.push('**Keys:**\n*Inputs key values into command `|KEYNAME|` (IN requires a number)*\n\n' + this._keys.reduce((a, e) => `${a}**${e.key}** - *${e.description}*\n`, ''))
           const embed = {
             title: '*[Click for support]* Made by mets11rap\nDISCLAIMER: If you have an outdated computer, some symbols may not appear correctly. Also, some commands support all characters, while some only support some.',
             description: `${client.user.username} is a text manipulation bot, useful for basic text functions or tools. Click [here](${process.env.DBL_PAGE}) to add me to your server!\n**Note:** The dates used are EDT timezone. [Github](${pkg.repository.url.substring(4)})`,
@@ -560,7 +560,7 @@ module.exports = (client, knex) => {
                 defMsg: msgLinkCompile(msg)
               })
               knex.update({
-                table: 'users',
+                table: process.env.TABLE,
                 where: {
                   id: msg.author.id
                 },
@@ -574,7 +574,7 @@ module.exports = (client, knex) => {
               if (note) {
                 delete user.notes[user.notes.findIndex(n => n.name === name)]
                 return knex.update({
-                  table: 'users',
+                  table: process.env.TABLE,
                   where: {
                     id: msg.author.id
                   },
@@ -606,7 +606,7 @@ module.exports = (client, knex) => {
                 defMsg: msgLinkCompile(msg)
               })
               knex.update({
-                table: 'users',
+                table: process.env.TABLE,
                 where: {
                   id: msg.author.id
                 },
@@ -620,7 +620,7 @@ module.exports = (client, knex) => {
               if (reminder) {
                 delete user.reminders[user.reminders.findIndex(r => r.name === name)]
                 return knex.update({
-                  table: 'users',
+                  table: process.env.TABLE,
                   where: {
                     id: msg.author.id
                   },

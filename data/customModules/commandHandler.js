@@ -1,9 +1,10 @@
 class CommandHandler {
-  constructor (client, adminID, knex) {
+  constructor (client, adminID, knex, defaultTable) {
     this._client = client
     this._admin = adminID
     this._awaits = {}
     this._knex = knex
+    this._table = defaultTable
   }
 
   async handle (msg, prefix) {
@@ -36,14 +37,14 @@ class CommandHandler {
     if (command.args && !args) throw Error('Invalid arguments. Reference the help menu.')
     // CREATE DB INDEX IF IT DOESN'T EXIST
     this._knex.insert({
-      table: 'users',
+      table: this._table,
       data: {
         id: msg.author.id
       }
     }).catch(ignore => ignore)
     // FETCH DB IF REQUIRED
     const user = !command.fetchDB || await this._knex.get({
-      table: 'users',
+      table: this._table,
       where: {
         id: msg.author.id
       }
@@ -69,7 +70,7 @@ class CommandHandler {
 
   // PRIVATE FUNCS
   _replaceKeys (msg, prefix) {
-    return msg.content.replace(/\${(.+?)}/g, (content, capture) => {
+    return msg.content.replace(/\|(.+?)|/g, (content, capture) => {
       const split = capture.split(' ')
       const key = this._keys.find(e => e.start && split.length > 1 ? e.key.startsWith(split[0]) : e.key === capture)
       return key ? key.action(msg, capture, prefix) : 'Invalid Key'
