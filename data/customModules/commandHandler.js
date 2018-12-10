@@ -8,12 +8,12 @@ class CommandHandler {
   }
 
   async handle (msg, prefix) {
+    // MENTION PREFIX
+    msg.content = msg.content.replace(new RegExp(`^<@!?${this._client.user.id}> ?`), prefix)
     // NOT THE PREFIX
     if (msg.content.substring(0, prefix.length) !== prefix) return
 
     // MESSAGE MANIPULATION
-    // MENTION PREFIX
-    msg.content = msg.content.replace(new RegExp(`^<@!?${this._client.user.id}> ?`), prefix)
     // KEYS
     msg.content = this._replaceKeys(msg, prefix)
     // FIND COMMAND OR AWAITED COMMAND
@@ -70,7 +70,7 @@ class CommandHandler {
 
   // PRIVATE FUNCS
   _replaceKeys (msg, prefix) {
-    return msg.content.replace(/\|(.+?)|/g, (content, capture) => {
+    return msg.content.replace(/\|(.+?)\|/g, (content, capture) => {
       const split = capture.split(' ')
       const key = this._keys.find(e => e.start && split.length > 1 ? e.key.startsWith(split[0]) : e.key === capture)
       return key ? key.action(msg, capture, prefix) : 'Invalid Key'
