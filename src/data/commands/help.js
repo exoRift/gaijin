@@ -1,0 +1,55 @@
+const { join } = require('path')
+
+const Command = require('../../modules/command')
+const { prefix, help } = require('../links.json')
+
+const data = {
+  name: 'help',
+  desc: 'Display this menu',
+  options: {
+    args: [{ name: 'page #' }]
+  },
+  action: function ({ client, msg, commands, keys, args: [num = 0] }) {
+    const fields = ['']
+    const pkg = require(join(process.cwd(), '/package.json'))
+    for (const command of [...commands.values()]) {
+      if (command.private) continue
+      const content = command.info
+      let index = fields.length - 1
+      if ((fields[index] + content.length) > 1024) {
+        fields[++index] = ''
+      }
+      fields[index] += (fields[index].length ? '\n' : '') + content
+    }
+    fields.push('**Keys:**\n*Inputs key values into command `|KEYNAME|` (IN requires a number)*\n\n' + [...keys.values()].reduce((a, e) => `${a}**${e.key}** - *${e.description}*\n`, ''))
+    const embed = {
+      title: '*[Click for support]* Made by mets11rap\nDISCLAIMER: If you have an outdated computer, some symbols may not appear correctly. Also, some commands support all characters, while some only support some.',
+      description: `${client.user.username} is a text manipulation bot, useful for basic text functions or tools. Click [here](${process.env.DBL_PAGE}) to add me to your server!\n**Note:** The dates used are EDT timezone. [Github](${pkg.repository.url.substring(4)})`,
+      url: 'https://discord.gg/' + process.env.SUPPORT_SERVER,
+      color: 33023,
+      footer: {
+        icon_url: prefix,
+        text: `Prefix: "${process.env.PREFIX}" or mention | <> = Mandatory () = Optional`
+      },
+      thumbnail: {
+        url: client.user.dynamicAvatarURL('png')
+      },
+      author: {
+        name: `${client.user.username} ${pkg.version} Help`,
+        icon_url: help
+      },
+      fields: [
+        {
+          name: `Commands Page ${parseInt(num) || 1} out of ${fields.length}`,
+          value: fields[parseInt(num) - 1] || fields[0]
+        }
+      ]
+    }
+
+    return {
+      embed
+    }
+  }
+}
+
+module.exports = new Command(data)
