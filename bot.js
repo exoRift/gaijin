@@ -1,5 +1,5 @@
 const Gaijin = require('./src/gaijin')
-require('dotenv').load()
+
 const {
   TOKEN,
   DATABASE_URL,
@@ -10,12 +10,7 @@ const {
 } = process.env
 
 const goodBoy = new Gaijin(TOKEN, {
-  connectionURL: {
-    user: 'postgres',
-    password: 'postgres',
-    host: '127.0.0.1',
-    database: 'scrimsbot'
-  }, // DATABASE_URL + '?ssl=true',
+  connectionURL: DATABASE_URL + '?ssl=true',
   tableName: TABLE
 }, {
   prefix: PREFIX,
