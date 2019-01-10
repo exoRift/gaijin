@@ -60,6 +60,17 @@ class Command {
      */
     this.restricted = restricted
   }
+
+  /**
+   * Get info of this command.
+   * @returns {String} A string describing the command.
+   */
+  get info () {
+    return `**${this.name}` + this.args.reduce((a, e, i) => {
+      const content = a + (e.mand ? `<${e.name}>` : `(${e.name})`) + (e.delim || ' ')
+      return (i === this.args.length - 1) ? content.slice(0, -1 * (e.delim ? e.delim.length : 1)) : content
+    }, ' ') + `** - *${this.desc}*`
+  }
 }
 
 module.exports = Command
