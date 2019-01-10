@@ -103,32 +103,25 @@ class CommandHandler {
    */
 
   async handle (msg) {
-    console.log('checking prefix')
     let text = msg.content.replace(new RegExp(`^<@!?${this._client.user.id}> ?`), this._prefix)
-    console.log('text', text)
     if (!text.startsWith(this._prefix)) return
-    console.log('removing prefix and running replacers on: ', text)
+
     text = text.substring(this._prefix.length)
     text = this._runReplacers(text)
-    console.log('checking awaits')
+
     let awaited = this._awaits.get(msg.channel.id + msg.author.id)
-    if (awaited && ((Date.now() - awaited.timestamp) > awaited.timeout || !awaited.check(msg))) {
-      console.log('bad await')
+    if (awaited && ((Date.now() - awaited.timestamp) > awaited.timeout || !awaited.check({ prefix: this._prefix, msg }))) {
       return awaited.clear()
     }
-    console.log('splitting args')
+
     let args = text.split(' ')
-    console.log('args', args)
     const keyword = args.shift()
-    console.log('keyword', keyword)
     const command = awaited || this._commands.get(keyword)
-    console.log('command', command)
 
     if (!command) return
     if (command.restricted && msg.author.id !== this._ownerId) throw Error('This command is either temporarily disabled, or private.')
-    console.log('santizing args')
+
     args = this._sanitizeArgs(command, args)
-    console.log('args', args)
     if (command.args && !args) throw Error('Invalid arguments. Reference the help menu.')
     let dbData
     if (command.dbTable) {
@@ -137,25 +130,26 @@ class CommandHandler {
 
     const result = await command.action({
       client: this._client,
+      commands: this._commands,
+      keys: this._replacers,
       msg,
-      args: args,
+      args,
       [command.dbTable]: dbData,
       knex: this._knex,
-      lastResponse: awaited ? command.lastResponse : null
+      lastResponse: command.lastResponse
     })
 
-    if (typeof result === 'string' || result === undefined) return result
+    if (!result) return
+
     const {
       content,
       embed,
       wait,
       file
-    } = result
+    } = typeof result === 'string' ? { content: result } : result
 
-    if (wait && wait instanceof Await) {
-      this._addAwait(wait)
-    }
-    return content || embed || file ? { content, embed, file } : undefined
+    msg.channel.createMessage({ content, embed }, file)
+      .then((msg) => wait && wait instanceof Await ? this._addAwait(msg, wait) : null)
   }
 
   _handleDBRequest (table, id) {

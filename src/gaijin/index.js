@@ -176,15 +176,6 @@ class Gaijin {
     if (msg.author.bot) return
 
     this._commandHandler.handle(msg)
-      .then(res => {
-        if (!res) return
-        const {
-          content, embed, file
-        } = (typeof res === 'string' ? { content: res } : res)
-
-        msg.channel.createMessage({ content, embed }, file)
-          .catch(err => this._showError(err, msg, res))
-      })
       .catch(err => this._showError(err, msg))
   }
   async _onReady (client) {
