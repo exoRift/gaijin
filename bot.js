@@ -51,7 +51,7 @@ function connect (count) {
         default: '[]'
       }
     ]
-  }).catch(ignore => ignore)
+  }).catch((ignore) => ignore)
   commandClient.registerCommands(require('./data/commands.js'))
 
   // DB CLEAN
@@ -65,7 +65,7 @@ function connect (count) {
 })()
 
 // SHARD READY
-client.on('shardReady', shard => {
+client.on('shardReady', (shard) => {
   console.log(`Connected as ${client.user.username} on shard ${shard}`)
   client.shards.get(shard).editStatus({
     name: `Prefix: '${process.env.PREFIX}'`,
@@ -75,32 +75,32 @@ client.on('shardReady', shard => {
 })
 
 // MESSAGE RECIEVED
-client.on('messageCreate', msg => {
+client.on('messageCreate', (msg) => {
   // PREVENTING BOT LOOPING
   if (msg.author.bot) return
   // HANDLE
-  commandClient.handle(msg, process.env.PREFIX).then(res => {
+  commandClient.handle(msg, process.env.PREFIX).then((res) => {
     if (!res) return
     const { content, embed, file } = (typeof res === 'string' ? { content: res } : res)
-    msg.channel.createMessage({ content, embed }, file).catch(err => showError(err, msg, res))
-  }).catch(err => showError(err, msg))
+    msg.channel.createMessage({ content, embed }, file).catch((err) => showError(err, msg, res))
+  }).catch((err) => showError(err, msg))
 })
 
 // SHARD DISCONNECT
-client.on('shardDisconnect', shard => {
+client.on('shardDisconnect', (shard) => {
   console.log(`Shard ${shard} lost connection`)
   connect()
 })
 
 // REMINDERS CHECK
 setInterval(() => {
-  knex.select(process.env.TABLE).then(users => {
+  knex.select(process.env.TABLE).then((users) => {
     if (!users) return
     (async function (users) {
       users.forEach((user, row) => {
         user.reminders.forEach((reminder, index) => {
           if (Date.now() >= new Date(reminder.date).getTime()) {
-            client.users.get(user.id).getDMChannel().then(channel => channel.createMessage(`__REMINDER__:\n**${reminder.name}**\n${reminder.desc}\n-*${new Date(reminder.date).toString()}*`)).then(() => {
+            client.users.get(user.id).getDMChannel().then((channel) => channel.createMessage(`__REMINDER__:\n**${reminder.name}**\n${reminder.desc}\n-*${new Date(reminder.date).toString()}*`)).then(() => {
               delete user.reminders[index]
               knex.update({
                 table: process.env.TABLE,

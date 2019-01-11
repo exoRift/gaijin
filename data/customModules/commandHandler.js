@@ -41,7 +41,7 @@ class CommandHandler {
       data: {
         id: msg.author.id
       }
-    }).catch(ignore => ignore)
+    }).catch((ignore) => ignore)
     // FETCH DB IF REQUIRED
     const user = !command.fetchDB || await this._knex.get({
       table: this._table,
@@ -73,7 +73,7 @@ class CommandHandler {
   _replaceKeys (msg, prefix) {
     return msg.content.replace(/\|(.+?)\|/g, (content, capture) => {
       const split = capture.split(' ')
-      const key = this._keys.find(e => e.start && split.length > 1 ? e.key.startsWith(split[0]) : e.key === capture)
+      const key = this._keys.find((e) => e.start && split.length > 1 ? e.key.startsWith(split[0]) : e.key === capture)
       return key ? key.action(msg, capture, prefix) : 'Invalid Key'
     })
   }

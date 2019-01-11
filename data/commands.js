@@ -73,7 +73,7 @@ module.exports = (client, knex) => {
       {
         key: 'LAST',
         desc: 'Last message sent in channel by bot',
-        action: msg => {
+        action: (msg) => {
           const lastMessage = msg.channel.lastMessage
           return lastMessage && lastMessage.content ? lastMessage.content : 'No previous message'
         }
@@ -105,13 +105,13 @@ module.exports = (client, knex) => {
     commands: {
       ping: {
         desc: "Check if the bot is online, display the bot's ping in ms, and view the amount of servers the bot's in",
-        action: msg => {
+        action: (msg) => {
           const shard = msg.channel.type ? client.shards.get(0) : msg.channel.guild.shard
           const clientLatency = Date.now() - msg.timestamp
           return {
             embed: {
               title: 'Bot Status',
-              description: `Pong! Client: **${clientLatency}ms** API: **${shard.latency}ms** | Servers: **${client.guilds.filter(g => g.shard.id === shard.id).length}**`,
+              description: `Pong! Client: **${clientLatency}ms** API: **${shard.latency}ms** | Servers: **${client.guilds.filter((g) => g.shard.id === shard.id).length}**`,
               color: clientLatency > 200 && clientLatency < 300 ? 16776960 : clientLatency > 300 ? 15933733 : 111111,
               author: {
                 name: 'Ping',
@@ -123,9 +123,9 @@ module.exports = (client, knex) => {
       },
       shards: {
         desc: 'View all shard latencies',
-        action: msg => {
-          const shards = client.shards.map(s => s)
-          const latencies = shards.map(s => s.latency)
+        action: (msg) => {
+          const shards = client.shards.map((s) => s)
+          const latencies = shards.map((s) => s.latency)
           const average = latencies.reduce((a, e) => a + e, 0) / latencies.length
           const fields = []
           for (const item of shards) {
@@ -202,8 +202,8 @@ module.exports = (client, knex) => {
           return {
             embed,
             await: {
-              check: m => m.content.startsWith(process.env.PREFIX + 'help'),
-              rspCheck: m => m.embeds[0] && m.embeds[0].description && m.embeds[0].description.startsWith(client.user.username),
+              check: (m) => m.content.startsWith(process.env.PREFIX + 'help'),
+              rspCheck: (m) => m.embeds[0] && m.embeds[0].description && m.embeds[0].description.startsWith(client.user.username),
               time: 15000,
               args: [{ name: 'page #' }],
               action: (msg, [num], { rsp }) => {
@@ -240,9 +240,9 @@ module.exports = (client, knex) => {
           switch (type) {
             case 'all': return text.toUpperCase()
             case 'none': return text.toLowerCase()
-            case 'sentence': return text.replace(/(^|\.|\?|!)(\s+.|.)/g, match => match.toUpperCase())
-            case 'word': return text.split(' ').map(e => e.slice(-1).toUpperCase() + e.slice(1)).join(' ')
-            case 'rand': return text.split('').map(e => Math.round(Math.random()) ? e.toUpperCase() : e.toLowerCase()).join('')
+            case 'sentence': return text.replace(/(^|\.|\?|!)(\s+.|.)/g, (match) => match.toUpperCase())
+            case 'word': return text.split(' ').map((e) => e.slice(-1).toUpperCase() + e.slice(1)).join(' ')
+            case 'rand': return text.split('').map((e) => Math.round(Math.random()) ? e.toUpperCase() : e.toLowerCase()).join('')
             default: throw Error('Invalid Type.')
           }
         }
@@ -255,12 +255,12 @@ module.exports = (client, knex) => {
       vowels: {
         desc: 'Remove all consonants from text',
         args: [{ name: 'text', mand: true }],
-        action: (msg, [text]) => text.split('').filter(e => this._reference[4].includes(e.toLowerCase())).join('')
+        action: (msg, [text]) => text.split('').filter((e) => this._reference[4].includes(e.toLowerCase())).join('')
       },
       consonants: {
         desc: 'Remove all vowels from text',
         args: [{ name: 'text', mand: true }],
-        action: (msg, [text]) => text.split('').filter(e => !this._reference[4].includes(e.toLowerCase())).join('')
+        action: (msg, [text]) => text.split('').filter((e) => !this._reference[4].includes(e.toLowerCase())).join('')
       },
       corrupt: {
         desc: 'Use the Zalgo method to corrupt characters',
@@ -474,7 +474,7 @@ module.exports = (client, knex) => {
         args: [{ name: 'type (exact, word)', mand: true }, { name: 'original', mand: true, delim: '|' }, { name: 'changed', mand: true, delim: '|' }],
         action: (msg, [method, original, changed]) => {
           const exact = method.toLowerCase() === 'exact'
-          let newText = changed.split(exact ? '' : ' ')
+          const newText = changed.split(exact ? '' : ' ')
           let dif
           original.split(exact ? '' : ' ').forEach((element, index, array) => {
             if (element !== newText[index]) {
@@ -528,7 +528,7 @@ module.exports = (client, knex) => {
       },
       noformat: {
         desc: 'Return the last message sent by the bot in a codeblock for easy copying',
-        action: msg => '`' + msg.channel.lastMessage.content + '`'
+        action: (msg) => '`' + msg.channel.lastMessage.content + '`'
       },
       dblwidget: {
         desc: 'View a customized widget of the bot (Discord Bot List)',
@@ -547,7 +547,7 @@ module.exports = (client, knex) => {
         args: [{ name: 'action (view, set, delete) (Nothing to list all)' }, { name: 'name', delim: '|' }, { name: 'content' }],
         fetchDB: true,
         action: (msg, [action, name, content], { user }) => {
-          const note = user.notes.find(n => n.name === name)
+          const note = user.notes.find((n) => n.name === name)
           switch (action) {
             case 'view':
               if (note) return `*${note.name}*\n${note.desc}`
@@ -572,7 +572,7 @@ module.exports = (client, knex) => {
               else return 'Done! Created note.'
             case 'delete':
               if (note) {
-                delete user.notes[user.notes.findIndex(n => n.name === name)]
+                delete user.notes[user.notes.findIndex((n) => n.name === name)]
                 return knex.update({
                   table: process.env.TABLE,
                   where: {
@@ -592,7 +592,7 @@ module.exports = (client, knex) => {
         args: [{ name: 'action (view, set, delete) (Nothing to list all)' }, { name: 'name', delim: '|' }, { name: 'content', delim: '|' }, { name: 'date' }],
         fetchDB: true,
         action: (msg, [action, name, content, date], { user }) => {
-          const reminder = user.reminders.find(r => r.name === name)
+          const reminder = user.reminders.find((r) => r.name === name)
           switch (action) {
             case 'view':
               if (reminder) return `*${reminder.name}*\n${reminder.desc}\n**${new Date(reminder.date).toString()}**`
@@ -618,7 +618,7 @@ module.exports = (client, knex) => {
               else return 'Done! Created reminder.'
             case 'delete':
               if (reminder) {
-                delete user.reminders[user.reminders.findIndex(r => r.name === name)]
+                delete user.reminders[user.reminders.findIndex((r) => r.name === name)]
                 return knex.update({
                   table: process.env.TABLE,
                   where: {
