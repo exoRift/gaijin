@@ -1,6 +1,7 @@
 const { join } = require('path')
 
 const Command = require('../../modules/command')
+const Await = require('../../modules/await')
 const { prefix, help } = require('../links.json')
 
 const data = {
@@ -46,8 +47,27 @@ const data = {
       ]
     }
 
+    const wait = new Await({
+      check: ({ msg, prefix }) => msg.content.startsWith(prefix + 'help'),
+      time: 15000,
+      options: {
+        args: [{ name: 'page #' }]
+      },
+      action: ({ msg, args: [num], lastResponse }) => {
+        embed.fields = [
+          {
+            name: `Commands Page ${parseInt(num) || 1} out of ${fields.length}`,
+            value: fields[parseInt(num) - 1] || fields[0]
+          }
+        ]
+        lastResponse.edit({ embed })
+        return { wait }
+      }
+    })
+
     return {
-      embed
+      embed,
+      wait
     }
   }
 }
