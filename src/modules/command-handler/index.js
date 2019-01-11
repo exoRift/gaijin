@@ -148,8 +148,10 @@ class CommandHandler {
       file
     } = typeof result === 'string' ? { content: result } : result
 
-    msg.channel.createMessage({ content, embed }, file)
-      .then((msg) => wait && wait instanceof Await ? this._addAwait(msg, wait) : null)
+    if (content || embed || file) {
+      msg.channel.createMessage({ content, embed }, file)
+        .then((rsp) => wait && wait instanceof Await ? this._addAwait(msg, rsp, wait) : null)
+    }
   }
 
   _handleDBRequest (table, id) {
@@ -214,12 +216,12 @@ class CommandHandler {
    * @param {Message} msg  The message that started it all.
    * @param {Await}   wait The command we are awaiting.
    */
-  async _addAwait (msg, wait) {
+  async _addAwait (msg, rsp, wait) {
     const id = msg.channel.id + msg.author.id
     const timer = setTimeout(() => this._awaits.delete(id), wait.timeout)
     this._awaits.set(id, {
       id,
-      lastResponse: msg,
+      lastResponse: rsp,
       ...wait,
       timestamp: Date.now(),
       timer,
