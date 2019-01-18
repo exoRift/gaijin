@@ -26,7 +26,7 @@ class Agent {
       tables
     } = databaseOptions
     const {
-      connectRetryLimit = 5,
+      connectRetryLimit = 10,
       prefix = '!',
       dblToken,
       remindersCheckInterval = 300000
@@ -99,7 +99,7 @@ class Agent {
       ]
     })
     Promise.all(tables.map(this._knex.createTable))
-      .catch(ignored => ignored)
+      .catch((ignored) => ignored)
       .finally(() => this._knex.delete({
         table: 'users',
         where: {
@@ -151,7 +151,7 @@ class Agent {
    * @param  {Message} msg   The original message from Discord.
    * @param  {*}       [res] The response from a command.
    */
-  _showError (err, msg, res) {
+  _handleErrors (err, msg, res) {
     if (res && typeof response === 'string' && err.code === 50035) {
       msg.channel.createMessage({
         content: 'Text was too long, sent as a file instead.',
@@ -171,7 +171,7 @@ class Agent {
     if (msg.author.bot) return
 
     this._commandHandler.handle(msg)
-      .catch(err => this._showError(err, msg))
+      .catch((err) => this._handleErrors(err, msg))
   }
   async _onReady (client) {
     this._commandHandler = new CommandHandler({
@@ -250,5 +250,5 @@ module.exports = Agent
  * @property {Number} [connectRetryLimit=10]           The maximum number of times to retry connecting to the Discord API.
  * @property {String} [prefix='!']                     The command prefix.
  * @property {String} [dblToken]                       The token used with the DiscordBotsList API.
- * @property {Number} [remindersCheckInterval=3000000] The amoount of time to wait between checking on reminders.
+ * @property {Number} [remindersCheckInterval=3000000] The amount of time to wait between checking on reminders.
  */
