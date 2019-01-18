@@ -7,13 +7,9 @@ const Await = require('../await')
 class CommandHandler {
   /**
    * Create a CommandHandler
-   * @param {String}            prefix        The prefix of commands.
-   * @param {Client}            client        The Eris client.
-   * @param {String}            ownerId       The ID of the bot owner.
-   * @param {QueryBuilder}      knex          The simple-knex query builder.
-   * @param {Command[]|Command} [commands=[]] List of commands to load initially.
+   * @param {CommandHandlerData} data The command handler data.
    */
-  constructor (prefix, client, ownerId, knex, commands = []) {
+  constructor ({ prefix, client, ownerId, knex, replacers = new Map(), commands = [] }) {
     /**
      * The prefix of commands.
      * @type {String}
@@ -48,37 +44,7 @@ class CommandHandler {
      * Map of replacers.
      * @type {Map<String, Replacer>}
      */
-    this._replacers = new Map([
-      ['LAST', {
-        key: 'LAST',
-        desc: 'Last message sent in channel by bot',
-        action: ({ msg }) => {
-          const lastMessage = msg.channel.lastMessage
-          return lastMessage && lastMessage.content ? lastMessage.content : 'No previous message'
-        }
-      }], ['DATE', {
-        key: 'DATE',
-        desc: 'Current date',
-        action: () => {
-          const d = Date()
-          // SWITCHING TO EDT
-          const date = new Date(d.substring(0, d.indexOf('GMT') + 4) + '0 (UTC)').toJSON()
-          return date.substring(0, date.length - 8)
-        }
-      }], ['IN', {
-        key: 'IN',
-        desc: 'The current date plus the number of hours inputted',
-        start: true,
-        action: ({ msg, key }) => {
-          const num = key.split(' ')[1]
-          if (isNaN(Number(num))) return 'Input is not a number'
-          const d = new Date(Date.now() + (Number(num) * 3600000)).toString()
-          // SWITCHING TO EDT
-          const date = new Date(d.substring(0, d.indexOf('GMT') + 4) + '0 (UTC)').toJSON()
-          return date.substring(0, date.length - 8)
-        }
-      }]
-    ])
+    this._replacers = replacers
     // load some commands
     this.loadCommands(commands)
   }
@@ -99,9 +65,8 @@ class CommandHandler {
 
   /**
    * Handle incoming Discord messages.
-   * @param {Message} msg    The Discord message.
+   * @param {Message} msg The Discord message.
    */
-
   async handle (msg) {
     let text = msg.content.replace(new RegExp(`^<@!?${this._client.user.id}> ?`), this._prefix)
     if (!text.startsWith(this._prefix)) return
@@ -155,6 +120,7 @@ class CommandHandler {
   }
 
   _handleDBRequest (table, id) {
+    if (!this._knex) throw Error('QueryBuilder was not supplied to CommandHandler!')
     return this._knex.insert({ table, data: { id } })
       .catch(ignore => ignore)
       .finally(() => this._knex.get({ table, where: { id } }))
@@ -234,7 +200,15 @@ class CommandHandler {
 }
 
 module.exports = CommandHandler
-
+/**
+ * @typedef  {Object}                CommandHandlerData
+ * @property {String}                prefix        The prefix of commands.
+ * @property {Client}                client        The Eris client.
+ * @property {String}                ownerId       The ID of the bot owner.
+ * @property {QueryBuilder}          [knex]        The simple-knex query builder.
+ * @property {Map<String, Replacer>} [replacers]   The command arg replacers.
+ * @property {Command[]|Command}     [commands=[]] List of commands to load initially.
+ */
 /**
  * Context of awaiting messages.
  * @typedef  {Object}   AwaitData
