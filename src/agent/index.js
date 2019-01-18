@@ -11,32 +11,26 @@ const {
 } = require('../data')
 
 /**
- * Class representing Gaijin.
+ * Class representing a bot Agent.
  */
-class Gaijin {
+class Agent {
   /**
-   * Create a Gaijin
-   * @param {String} token                                    The token to log in to the Discord API with.
-   * @param {Object} databaseInfo                             The info for the PostgreSQL database.
-   * @param {String} databaseInfo.connectionURL               The PostgreSQL database url.
-   * @param {String} databaseInfo.tableName                   The name of the table we store user data in the PostgreSQL database.
-   * @param {Object} [options={}]                             Options object.
-   * @param {Number} [options.connectRetryLimit=5]            The maximum number of times to retry connecting to the Discord API.
-   * @param {String} [options.prefix='!!!']                   The command prefix.
-   * @param {String} [options.dblToken]                       The token used with the DiscordBotsList API.
-   * @param {Number} [options.remindersCheckInterval=3000000] The amoount of time to wait between checking on reminders.
+   * Create an Agent.
+   * @param {String}          token           The token to log in to the Discord API with.
+   * @param {DatabaseOptions} databaseOptions The info for the database.
+   * @param {AgentOptions}    [agentOptions]  Options for the agent.
    */
-  constructor (token, databaseInfo, options = {}) {
+  constructor (token, databaseOptions, agentOptions = {}) {
     const {
       connectionURL,
-      tableName
-    } = databaseInfo
+      tables
+    } = databaseOptions
     const {
       connectRetryLimit = 5,
-      prefix = '!!!',
+      prefix = '!',
       dblToken,
       remindersCheckInterval = 300000
-    } = options
+    } = agentOptions
     /**
      * The eris Client.
      * @type {CustomEris.Client}
@@ -54,9 +48,8 @@ class Gaijin {
         max: 1
       }
     })
-    this._knex.__tableName = tableName
     /**
-     * The dblapi.js DBLAPI.
+     * The dblapi.js DBLAPI (DiscordBotsList).
      * @type {DBLAPI}
      */
     this._dblAPI = dblToken ? new DBLAPI(dblToken, this._client) : null
@@ -72,7 +65,7 @@ class Gaijin {
     this._prefix = prefix
 
     // setup
-    this._prepareDB(this._knex.__tableName)
+    this._prepareDB(tables)
     this._bindEvents()
     this._setRemindersCheck(remindersCheckInterval)
   }
@@ -84,9 +77,9 @@ class Gaijin {
     if (count >= this._connectRetryLimit) return console.error('RECONNECTION LIMIT REACHED; RECONNECTION CANCELED')
     return this._client.connect().catch(() => this.connect(count + 1))
   }
-  _prepareDB (tableName) {
-    this._knex.createTable({
-      name: tableName,
+  _prepareDB (tables) {
+    tables.push({
+      name: 'users',
       columns: [
         {
           name: 'id',
@@ -104,9 +97,11 @@ class Gaijin {
           default: '[]'
         }
       ]
-    }).catch((ignored) => true)
+    })
+    Promise.all(tables.map(this._knex.createTable))
+      .catch(ignored => ignored)
       .finally(() => this._knex.delete({
-        table: tableName,
+        table: 'users',
         where: {
           notes: '[]',
           reminders: '[]'
@@ -179,13 +174,44 @@ class Gaijin {
       .catch(err => this._showError(err, msg))
   }
   async _onReady (client) {
-    this._commandHandler = new CommandHandler(
-      this._prefix,
+    this._commandHandler = new CommandHandler({
+      prefix: this._prefix,
       client,
-      (await client.getOAuthApplication()).owner.id,
-      this._knex,
-      (await requireCommands())
-    )
+      ownerId: (await client.getOAuthApplication()).owner.id,
+      knex: this._knex,
+      replacers: new Map([
+        ['LAST', {
+          key: 'LAST',
+          desc: 'Last message sent in channel by bot',
+          action: ({ msg }) => {
+            const lastMessage = msg.channel.lastMessage
+            return lastMessage && lastMessage.content ? lastMessage.content : 'No previous message'
+          }
+        }], ['DATE', {
+          key: 'DATE',
+          desc: 'Current date',
+          action: () => {
+            const d = Date()
+            // SWITCHING TO EDT
+            const date = new Date(d.substring(0, d.indexOf('GMT') + 4) + '0 (UTC)').toJSON()
+            return date.substring(0, date.length - 8)
+          }
+        }], ['IN', {
+          key: 'IN',
+          desc: 'The current date plus the number of hours inputted',
+          start: true,
+          action: ({ msg, key }) => {
+            const num = key.split(' ')[1]
+            if (isNaN(Number(num))) return 'Input is not a number'
+            const d = new Date(Date.now() + (Number(num) * 3600000)).toString()
+            // SWITCHING TO EDT
+            const date = new Date(d.substring(0, d.indexOf('GMT') + 4) + '0 (UTC)').toJSON()
+            return date.substring(0, date.length - 8)
+          }
+        }]
+      ]),
+      commands: (await requireCommands())
+    })
   }
   _onShardReady (client, shard) {
     console.log(`Connected as ${client.user.username} on shard ${shard}`)
@@ -201,4 +227,28 @@ class Gaijin {
   }
 }
 
-module.exports = Gaijin
+module.exports = Agent
+/**
+ * @typedef  {Object}  DatabaseColumn
+ * @property {String}  name            The name of the database column.
+ * @property {String}  type            The data type of the database column.
+ * @property {Boolean} [primary=false] Whether or not this column is the primary key of the table.
+ * @property {*}       [default]       The default value of this column, should match this column's type.
+ */
+/**
+ * @typedef  {Object}   DatabaseTable
+ * @property {String}   name    The name of the table.
+ * @property {Column[]} columns The columns of the table to store data in.
+ */
+/**
+ * @typedef  {Object}  DatabaseOptions
+ * @property {String}  connectionURL The database url.
+ * @property {Table[]} tables        The tables to create in the database.
+ */
+/**
+ * @typedef  {Object} AgentOptions
+ * @property {Number} [connectRetryLimit=10]           The maximum number of times to retry connecting to the Discord API.
+ * @property {String} [prefix='!']                     The command prefix.
+ * @property {String} [dblToken]                       The token used with the DiscordBotsList API.
+ * @property {Number} [remindersCheckInterval=3000000] The amoount of time to wait between checking on reminders.
+ */

@@ -1,5 +1,4 @@
-const Gaijin = require('./src/gaijin')
-
+const Agent = require('./src/agent')
 const {
   TOKEN,
   DATABASE_URL,
@@ -9,7 +8,7 @@ const {
   PREFIX
 } = process.env
 
-const goodBoy = new Gaijin(TOKEN, {
+const agent = new Agent(TOKEN, {
   connectionURL: DATABASE_URL + '?ssl=true',
   tableName: TABLE
 }, {
@@ -18,4 +17,4 @@ const goodBoy = new Gaijin(TOKEN, {
   dblToken: DBL_TOKEN
 })
 
-goodBoy.connect()
+agent.connect()
