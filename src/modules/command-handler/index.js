@@ -1,5 +1,6 @@
 const Command = require('../command')
 const Await = require('../await')
+const Replacer = require('../replacer')
 
 /**
  * A class reprsenting the command handler.
@@ -9,7 +10,7 @@ class CommandHandler {
    * Create a CommandHandler
    * @param {CommandHandlerData} data The command handler data.
    */
-  constructor ({ prefix, client, ownerId, knex, replacers = new Map(), commands = [] }) {
+  constructor ({ prefix, client, ownerId, knex, replacers = [], commands = [] }) {
     /**
      * The prefix of commands.
      * @type {String}
@@ -26,7 +27,7 @@ class CommandHandler {
      */
     this._knex = knex
     /**
-     * Array of commands.
+     * Map of commands.
      * @type {Map<String, Command>}
      */
     this._commands = new Map()
@@ -44,9 +45,10 @@ class CommandHandler {
      * Map of replacers.
      * @type {Map<String, Replacer>}
      */
-    this._replacers = replacers
+    this._replacers = new Map()
     // load some commands
     this.loadCommands(commands)
+    this.loadReplacers(replacers)
   }
 
   /**
@@ -60,6 +62,20 @@ class CommandHandler {
       }
     } else {
       this._loadCommand(commands)
+    }
+  }
+
+  /**
+   * Load replacers.
+   * @param {Replacer[]|Replacer} replacers The replacer(s) to load.
+   */
+  loadReplacers (replacers) { // FIXME: This is redundant with loadCommands
+    if (replacers instanceof Array) {
+      for (let i = 0; i < replacers.length; i++) {
+        this._loadReplacer(replacers[i])
+      }
+    } else {
+      this._loadReplacer(replacers)
     }
   }
 
@@ -149,6 +165,17 @@ class CommandHandler {
     if (!(command instanceof Command)) throw TypeError('Not a command:\n', command)
     this._commands.set(command.name, command)
   }
+
+  /**
+   * Load a replacer.
+   * @private
+   * @param   {Replacer} replacer The replacer to load.
+   */
+  _loadReplacer (replacer) { // FIXME: This is redundant with _loadCommand
+    if (!(replacer instanceof Replacer)) throw TypeError('Not a replacer:\n', replacer)
+    this._replacers.set(replacer.key, replacer)
+  }
+
   _sanitizeArgs (command, args) {
     const start = Date.now()
     const chars = args.join(' ').split('')
@@ -201,13 +228,13 @@ class CommandHandler {
 
 module.exports = CommandHandler
 /**
- * @typedef  {Object}                CommandHandlerData
- * @property {String}                prefix        The prefix of commands.
- * @property {Client}                client        The Eris client.
- * @property {String}                ownerId       The ID of the bot owner.
- * @property {QueryBuilder}          [knex]        The simple-knex query builder.
- * @property {Map<String, Replacer>} [replacers]   The command arg replacers.
- * @property {Command[]|Command}     [commands=[]] List of commands to load initially.
+ * @typedef  {Object}              CommandHandlerData
+ * @property {String}              prefix         The prefix of commands.
+ * @property {Client}              client         The Eris client.
+ * @property {String}              ownerId        The ID of the bot owner.
+ * @property {QueryBuilder}        [knex]         The simple-knex query builder.
+ * @property {Replacer[]|Replacer} [replacers=[]] The command arg replacers.
+ * @property {Command[]|Command}   [commands=[]]  List of commands to load initially.
  */
 /**
  * Context of awaiting messages.
