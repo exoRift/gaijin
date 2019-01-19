@@ -1,3 +1,6 @@
+const { readdir } = require('fs').promises
+const { join } = require('path')
+
 const reference = {
   base: 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
   vowels: 'aeiou'.split(''),
@@ -61,11 +64,22 @@ function replace (content, find, replace, { splitter = '', delim = '' } = {}) {
 function msgLinkCompile (msg) {
   return `https://discordapp.com/channels/${msg.channel.guild.id}/${msg.channel.id}/${msg.id}`
 }
+// to use in index.js files
+async function readAndRequireDir (path) {
+  const content = []
+  const files = await readdir(path)
+  for (let i = 0; i < files.length; i++) {
+    if (files[i].endsWith('index.js')) continue
+    content.push(require(join(path, files[i])))
+  }
+  return content
+}
 
 module.exports = {
   reference,
   resources,
   indices,
   replace,
-  msgLinkCompile
+  msgLinkCompile,
+  readAndRequireDir
 }

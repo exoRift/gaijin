@@ -19,7 +19,7 @@ class CustomTextChannel extends Eris.TextChannel {
    * @returns {Eris.Message} The last message sent by this bot in the channel.
    */
   get lastMessage () {
-    const messages = this.messages.filter(m => m.author.id === this.guild.shard.client.user.id)
+    const messages = this.messages.filter((m) => m.author.id === this.guild.shard.client.user.id)
     return messages[messages.length - 1]
   }
 }

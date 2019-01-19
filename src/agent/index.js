@@ -7,7 +7,8 @@ const {
 } = require('../modules')
 
 const {
-  requireCommands
+  requireCommands,
+  requireReplacers
 } = require('../data')
 
 /**
@@ -23,7 +24,7 @@ class Agent {
   constructor (token, databaseOptions, agentOptions = {}) {
     const {
       connectionURL,
-      tables
+      tables = []
     } = databaseOptions
     const {
       connectRetryLimit = 10,
@@ -65,8 +66,8 @@ class Agent {
     this._prefix = prefix
 
     // setup
-    this._prepareDB(tables)
     this._bindEvents()
+    this._prepareDB(tables)
     this._setRemindersCheck(remindersCheckInterval)
   }
   /**
@@ -74,8 +75,9 @@ class Agent {
    * @param {Number} count The current number of connection attempts.
    */
   connect (count = 0) {
-    if (count >= this._connectRetryLimit) return console.error('RECONNECTION LIMIT REACHED; RECONNECTION CANCELED')
-    return this._client.connect().catch(() => this.connect(count + 1))
+    console.log(`CONNECTION ATTEMPT #${count + 1}`)
+    if (count <= this._connectRetryLimit) return this._client.connect().catch(() => this.connect(count + 1))
+    return console.error('RECONNECTION LIMIT REACHED; RECONNECTION CANCELED')
   }
   _prepareDB (tables) {
     tables.push({
@@ -98,7 +100,7 @@ class Agent {
         }
       ]
     })
-    Promise.all(tables.map(this._knex.createTable))
+    Promise.all(tables.map((table) => this._knex.createTable(table)))
       .catch((ignored) => ignored)
       .finally(() => this._knex.delete({
         table: 'users',
@@ -111,13 +113,14 @@ class Agent {
   }
   _bindEvents () {
     this._client.on('ready', this._onReady.bind(this, this._client))
+    this._client.on('error', this._onError.bind(this, this._client))
     this._client.on('messageCreate', this._onCreateMessage.bind(this, this._client))
     this._client.on('shardDisconnect', this._onShardReady.bind(this, this._client))
     this._client.on('shardDisconnect', this._onShardDisconnect.bind(this, this._client))
   }
   _setRemindersCheck (remindersCheckInterval) {
     setInterval(async () => {
-      const users = await this._knex.select(this._knex.__tableName)
+      const users = await this._knex.select('users')
       if (!users) return
       for (const user of users) {
         for (let i = 0; i < user.reminders; i++) {
@@ -133,7 +136,7 @@ class Agent {
         const newReminders = user.reminders.filter((reminder) => reminder !== null)
         if (newReminders.length === user.reminders.length) continue
         this._knex.update({
-          table: this._knex.__tableName,
+          table: 'users',
           where: {
             id: user.id
           },
@@ -151,7 +154,7 @@ class Agent {
    * @param  {Message} msg   The original message from Discord.
    * @param  {*}       [res] The response from a command.
    */
-  _handleErrors (err, msg, res) {
+  _handleError (err, msg, res) {
     if (res && typeof response === 'string' && err.code === 50035) {
       msg.channel.createMessage({
         content: 'Text was too long, sent as a file instead.',
@@ -171,45 +174,16 @@ class Agent {
     if (msg.author.bot) return
 
     this._commandHandler.handle(msg)
-      .catch((err) => this._handleErrors(err, msg))
+      .catch((err) => this._handleError(err, msg))
   }
   async _onReady (client) {
+    console.log('ready')
     this._commandHandler = new CommandHandler({
       prefix: this._prefix,
       client,
       ownerId: (await client.getOAuthApplication()).owner.id,
       knex: this._knex,
-      replacers: new Map([
-        ['LAST', {
-          key: 'LAST',
-          desc: 'Last message sent in channel by bot',
-          action: ({ msg }) => {
-            const lastMessage = msg.channel.lastMessage
-            return lastMessage && lastMessage.content ? lastMessage.content : 'No previous message'
-          }
-        }], ['DATE', {
-          key: 'DATE',
-          desc: 'Current date',
-          action: () => {
-            const d = Date()
-            // SWITCHING TO EDT
-            const date = new Date(d.substring(0, d.indexOf('GMT') + 4) + '0 (UTC)').toJSON()
-            return date.substring(0, date.length - 8)
-          }
-        }], ['IN', {
-          key: 'IN',
-          desc: 'The current date plus the number of hours inputted',
-          start: true,
-          action: ({ msg, key }) => {
-            const num = key.split(' ')[1]
-            if (isNaN(Number(num))) return 'Input is not a number'
-            const d = new Date(Date.now() + (Number(num) * 3600000)).toString()
-            // SWITCHING TO EDT
-            const date = new Date(d.substring(0, d.indexOf('GMT') + 4) + '0 (UTC)').toJSON()
-            return date.substring(0, date.length - 8)
-          }
-        }]
-      ]),
+      replacers: (await requireReplacers()),
       commands: (await requireCommands())
     })
   }
@@ -221,9 +195,12 @@ class Agent {
     })
     this._dblAPI.postStats(client.guilds.size, shard, client.shards.size)
   }
-  _onShardDisconnect (shard) {
+  _onShardDisconnect (client, shard) {
     console.log(`Shard ${shard} lost connection`)
     this.connect()
+  }
+  _onError (client, error) {
+    console.error('fuck us', error)
   }
 }
 
@@ -243,7 +220,7 @@ module.exports = Agent
 /**
  * @typedef  {Object}  DatabaseOptions
  * @property {String}  connectionURL The database url.
- * @property {Table[]} tables        The tables to create in the database.
+ * @property {Table[]} [tables]      The additional tables to create in the database.
  */
 /**
  * @typedef  {Object} AgentOptions
