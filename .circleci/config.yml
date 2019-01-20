@@ -5,20 +5,23 @@ jobs:
       - image: "circleci/node:10.15.0"
     environment:
       DATABASE_URL: postgresql://root@localhost/circle_test
-    working_directory: ~/repo
+    working_directory: ~/Gaijin
     steps:
+      - checkout
+      - restore_cache:
+          key: npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
+      - run: npm i
       - run:
           command: |
-            npm i eslint -D
             mkdir -p ~/reports
+            cd $CIRCLE_WORKING_DIRECTORY
             npm run lint
           name: Lint
           when: always
       - run:
           command: |
-            npm i ava -D
-            npm i nyc -D
             mkdir -p ~/reports
+            cd $CIRCLE_WORKING_DIRECTORY
             npm run test
           name: Test
           when: always
@@ -26,7 +29,10 @@ jobs:
           path: ~/reports
       - store_artifacts:
           path: ~/reports
-
+      - save_cache:
+          key: npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - node_modules
 workflows:
   version: 2
   test:
