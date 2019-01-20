@@ -7,7 +7,7 @@ jobs:
       DATABASE_URL: postgresql://root@localhost/circle_test
     working_directory: ~/
     steps:
-      - lint:
+      - run:
           command: eslint ./
           name: Lint
           when: always
