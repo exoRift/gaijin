@@ -1,13 +1,17 @@
-version: 1
-jobs:
-  test:
-    environment:
-      DATABASE_URL: postgresql://root@localhost/circle_test
-    branches:
-      only:
-        - master
-    steps:
-      - run:
-          command: npm run test
-          name: Test
-          when: always
+workflows:
+  testing:
+    version: 1
+    jobs:
+      test:
+        docker:
+          - image: "circleci/node:10.15.0"
+        environment:
+          DATABASE_URL: postgresql://root@localhost/circle_test
+        branches:
+          only:
+            - master
+        steps:
+          - run:
+              command: npm run test
+              name: Test
+              when: always
