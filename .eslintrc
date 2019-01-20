@@ -5,6 +5,12 @@
     "no-lonely-if": "warn",
     "arrow-parens": "error",
     "no-var": "error",
-    "prefer-const": "error"
+    "prefer-const": "error",
+    "max-len": [
+      "warn",
+      {
+        "code": 155
+      }
+    ]
   }
 }
