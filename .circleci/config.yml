@@ -8,7 +8,11 @@ jobs:
     working_directory: ~/
     steps:
       - run:
-          command: eslint ./
+          command: tree
+          name: testing
+          when: always
+      - run:
+          command: eslint "./**"
           name: Lint
           when: always
       - run:
