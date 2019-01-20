@@ -5,13 +5,13 @@ jobs:
       - image: "circleci/node:10.15.0"
     environment:
       DATABASE_URL: postgresql://root@localhost/circle_test
-    working_directory: ~/Gaijin
+    working_directory: ~/repo
     steps:
       - run:
           command: |
             npm i eslint -D
             mkdir -p ~/reports
-            eslint ./src/ --format junit --output-file ~/reports/eslint.xml
+            npm run lint
           name: Lint
           when: always
       - run:
@@ -31,7 +31,4 @@ workflows:
   version: 2
   test:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: dev
+      - build
