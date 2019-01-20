@@ -7,7 +7,7 @@ jobs:
       only:
         - master
   steps:
-    run: npm run test
-      command: 
+    run:
+      command: npm run test
       name: Test
       when: always
