@@ -1,0 +1,13 @@
+version: 1
+jobs:
+  test:
+    environment:
+      DATABASE_URL: postgresql://root@localhost/circle_test
+    branches:
+      only:
+        - master
+  steps:
+    run: npm run test
+      command: 
+      name: Test
+      when: always
