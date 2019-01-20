@@ -5,26 +5,31 @@ jobs:
       - image: "circleci/node:10.15.0"
     environment:
       DATABASE_URL: postgresql://root@localhost/circle_test
-    working_directory: ~/Gaijin
     steps:
       - checkout
+      - run:
+          name: Update NPM
+          command: sudo npm i -g npm@latest
       - restore_cache:
           key: npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
-      - run: npm i
+      - run:
+          name: Install Dependencies
+          command: npm i
       - run:
           command: |
             mkdir -p ~/reports
-            cd $CIRCLE_WORKING_DIRECTORY
             npm run lint
           name: Lint
           when: always
       - run:
           command: |
             mkdir -p ~/reports
-            cd $CIRCLE_WORKING_DIRECTORY
             npm run test
           name: Test
           when: always
+      # - run:
+      #     name: Generate Code Coverage
+      #     command: nyc report --reporter=text-lcov
       - store_test_results:
           path: ~/reports
       - store_artifacts:
