@@ -1,4 +1,4 @@
-version: 1
+version: 2
 jobs:
   build:
     docker:
@@ -12,7 +12,7 @@ jobs:
           when: always
 
 workflows:
-  version: 1
+  version: 2
   test:
     jobs:
       - build:
