@@ -1,5 +1,4 @@
 [![CircleCI](https://circleci.com/gh/mets11rap/Gaijin.svg?style=svg)](https://circleci.com/gh/mets11rap/Gaijin)
-
 # Gaijin
 A text manipulation tool bot for Discord.
 
@@ -34,7 +33,7 @@ When you construct a new date, it's the UTC timezone. I'm basically transforming
 
 `res` - result
 
-`d`   - date
+`d` - date
 
 `err` - error
 

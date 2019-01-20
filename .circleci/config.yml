@@ -5,7 +5,12 @@ jobs:
       - image: "circleci/node:10.15.0"
     environment:
       DATABASE_URL: postgresql://root@localhost/circle_test
+    working_directory: ~/
     steps:
+      - lint:
+          command: eslint ./
+          name: Lint
+          when: always
       - run:
           command: npm run test
           name: Test
