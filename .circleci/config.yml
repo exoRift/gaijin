@@ -27,9 +27,9 @@ jobs:
             npm run test
           name: Test
           when: always
-      # - run:
-      #     name: Generate Code Coverage
-      #     command: nyc report --reporter=text-lcov
+      - run:
+          name: Generate Code Coverage
+          command: nyc report --reporter=text-lcov
       - store_test_results:
           path: ~/reports
       - store_artifacts:

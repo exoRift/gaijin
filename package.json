@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node bot.js",
     "test": "nyc --reporter lcov ava **/*.test.js",
-    "lint": "eslint ./src/ --format junit --output-file ~/reports/eslint.xml",
+    "lint": "eslint ./ --format junit --output-file ~/reports/eslint.xml",
     "build": "node content/buildDescs.js"
   },
   "author": "mets11rap",
