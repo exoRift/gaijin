@@ -5,9 +5,11 @@ jobs:
       - image: "circleci/node:10.15.0"
     environment:
       DATABASE_URL: postgresql://root@localhost/circle_test
+    working_directory: ~/Gaijin
     steps:
       - run:
           command: |
+            npm i eslint -D
             mkdir -p ~/reports
             eslint ./src/ --format junit --output-file ~/reports/eslint.xml
           name: Lint
