@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/mets11rap/Gaijin.svg?style=svg)](https://circleci.com/gh/mets11rap/Gaijin)
+
 # Gaijin
 A text manipulation tool bot for Discord.
 
