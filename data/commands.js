@@ -177,7 +177,7 @@ module.exports = (client, knex) => {
           }
           fields.push('**Keys:**\n*Inputs key values into command `|KEYNAME|` (IN requires a number)*\n\n' + this._keys.reduce((a, e) => `${a}**${e.key}** - *${e.description}*\n`, ''))
           const embed = {
-            title: '*[Click for support]* Made by mets11rap\nDISCLAIMER: If you have an outdated computer, some symbols may not appear correctly. Also, some commands support all characters, while some only support some.',
+            title: '*[Click for support]* Made by mets11rap\nDISCLAIMER: If you have an outdated computer, some symbols may not appear correctly. Some commands also may not support all characters.',
             description: `${client.user.username} is a text manipulation bot, useful for basic text functions or tools. Click [here](${process.env.DBL_PAGE}) to add me to your server!\n**Note:** The dates used are EDT timezone. [Github](${pkg.repository.url.substring(4)})`,
             url: 'https://discord.gg/' + process.env.SUPPORT_SERVER,
             color: 33023,
@@ -525,6 +525,11 @@ module.exports = (client, knex) => {
           }
           return Math.round(conversion(parseInt(temp))) / 100 + '°' + newUnit
         }
+      },
+      googleit: {
+        desc: 'Is someone being clueless by not using Google? Use this to teach them',
+        args: [{ name: 'search', mand: true }],
+        action: (msg, [search]) => 'https://lmgtfy.com?q=' + search
       },
       noformat: {
         desc: 'Return the last message sent by the bot in a codeblock for easy copying',

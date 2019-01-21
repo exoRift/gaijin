@@ -16,30 +16,22 @@ jobs:
           name: Install Dependencies
           command: npm i
       - run:
-          command: |
-            mkdir -p ~/reports
-            npm run lint
+          command: npm run lint
           name: Lint
           when: always
       - run:
-          command: |
-            mkdir -p ~/reports
-            npm run test
+          command: npm run test
           name: Test
           when: always
       - run:
           name: Generate Code Coverage
           command: nyc report --reporter=text-lcov
-      - store_test_results:
-          path: ~/reports
-      - store_artifacts:
-          path: ~/reports
       - save_cache:
           key: npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - node_modules
 workflows:
   version: 2
-  test:
+  testing:
     jobs:
       - build
