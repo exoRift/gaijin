@@ -1,8 +1,8 @@
+const Eris = require('eris')
 const QueryBuilder = require('simple-knex')
 const DBLAPI = require('dblapi.js')
 
 const {
-  CustomEris,
   CommandHandler
 } = require('../modules')
 
@@ -34,9 +34,9 @@ class Agent {
     } = agentOptions
     /**
      * The eris Client.
-     * @type {CustomEris.Client}
+     * @type {Eris.Client}
      */
-    this._client = new CustomEris.Client(token)
+    this._client = new Eris.Client(token)
     /**
      * The simple-knex QueryBuilder.
      * @type {QueryBuilder}
@@ -79,6 +79,20 @@ class Agent {
     if (count <= this._connectRetryLimit) return this._client.connect().catch(() => this.connect(count + 1))
     return console.error('RECONNECTION LIMIT REACHED; RECONNECTION CANCELED')
   }
+
+  /**
+   * Get the last message sent by the bot in a given channel
+   * @param {Channel} channel The channel to pick your last message from
+   */
+  lastMessage (channel) {
+    const {
+      messages,
+      guild
+    } = channel
+    const filtered = messages.filter((m) => m.author.id === guild.shard.client.user.id)
+    return filtered[filtered.length - 1]
+  }
+
   _prepareDB (tables) {
     tables.push({
       name: 'users',
@@ -179,6 +193,7 @@ class Agent {
   async _onReady (client) {
     console.log('ready')
     this._commandHandler = new CommandHandler({
+      agent: this,
       prefix: this._prefix,
       client,
       ownerId: (await client.getOAuthApplication()).owner.id,

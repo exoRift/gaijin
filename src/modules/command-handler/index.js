@@ -10,7 +10,7 @@ class CommandHandler {
    * Create a CommandHandler
    * @param {CommandHandlerData} data The command handler data.
    */
-  constructor ({ prefix, client, ownerId, knex, replacers = [], commands = [] }) {
+  constructor ({ agent, prefix, client, ownerId, knex, replacers = [], commands = [] }) {
     /**
      * The prefix of commands.
      * @type {String}
@@ -21,6 +21,10 @@ class CommandHandler {
      * @type {Client}
      */
     this._client = client
+    /**
+     * The custom bot agent.
+     */
+    this._agent = agent
     /**
      * The simple-knex query builder.
      * @type {QueryBuilder}
@@ -110,6 +114,7 @@ class CommandHandler {
     }
 
     const result = await command.action({
+      agent: this._agent,
       client: this._client,
       commands: this._commands,
       keys: this._replacers,
