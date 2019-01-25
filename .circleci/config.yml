@@ -1,5 +1,10 @@
 version: 2
 jobs:
+  lint:
+    steps:
+      - run:
+      command: npm run lint
+      name: Lint
   build:
     docker:
       - image: "circleci/node:10.15.0"
@@ -16,11 +21,8 @@ jobs:
           name: Install Dependencies
           command: npm i
       - run:
-          command: npm run lint
-          name: Lint
-      - run:
           command: npm run test
-          name: Test
+          name: Run
           when: always
       - run:
           name: Generate Code Coverage
@@ -31,6 +33,9 @@ jobs:
             - node_modules
 workflows:
   version: 2
+  linting:
+    jobs:
+      - lint
   testing:
     jobs:
       - build
