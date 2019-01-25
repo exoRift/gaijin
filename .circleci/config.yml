@@ -3,8 +3,8 @@ jobs:
   lint:
     steps:
       - run:
-      command: npm run lint
-      name: Lint
+          command: npm run lint
+          name: Lint
   build:
     docker:
       - image: "circleci/node:10.15.0"
