@@ -6,7 +6,7 @@ const data = {
   options: {
     args: [{ name: 'text', mand: true }]
   },
-  action: ({ msg, args: [text] }) => text.split('').join(' ')
+  action: ({ args: [text] }) => text.split('').join(' ')
 }
 
 module.exports = new Command(data)

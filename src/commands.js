@@ -6,26 +6,6 @@ const links = require('./links.json')
 module.exports = (client, knex) => {
   return {
     commands: {
-      leet: {
-        desc: 'Change leet-able characters to leet speak in text',
-        args: [{ name: 'text', mand: true }],
-        action: (msg, [text]) => replace(text, 'leetRef', 'leet')
-      },
-      deleet: {
-        desc: 'Turn leet speak into letters in text',
-        args: [{ name: 'text', mand: true }],
-        action: (msg, [text]) => replace(text, 'leet', 'leetRef')
-      },
-      morse: {
-        desc: 'Convert text to Morse Code',
-        args: [{ name: 'text', mand: true }],
-        action: (msg, [text]) => replace(text.toLowerCase(), 'base', 'morse', { delim: ' ' })
-      },
-      unmorse: {
-        desc: 'Convert More Code to text',
-        args: [{ name: 'text', mand: true }],
-        action: (msg, [text]) => replace(text, 'morse', 'base', { findDelim: ' ' })
-      },
       binary: {
         desc: 'Convert text to Binary',
         args: [{ name: 'text', mand: true }],
@@ -235,10 +215,6 @@ module.exports = (client, knex) => {
           }
           return Math.round(conversion(parseInt(temp))) / 100 + '°' + newUnit
         }
-      },
-      noformat: {
-        desc: 'Return the last message sent by the bot in a codeblock for easy copying',
-        action: msg => '`' + msg.channel.lastMessage.content + '`'
       },
       dblwidget: {
         desc: 'View a customized widget of the bot (Discord Bot List)',

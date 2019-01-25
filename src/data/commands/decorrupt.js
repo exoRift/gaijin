@@ -7,7 +7,7 @@ const data = {
   options: {
     args: [{ name: 'text', mand: true }]
   },
-  action: ({ msg, args: [text] }) => text.replace(new RegExp(corrupt.reduce((a, e) => a + (a ? '|' : '') + e, ''), 'g'), '')
+  action: ({ args: [text] }) => text.replace(new RegExp(corrupt.reduce((a, e) => a + (a ? '|' : '') + e, ''), 'g'), '')
 }
 
 module.exports = new Command(data)

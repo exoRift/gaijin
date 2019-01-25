@@ -8,7 +8,7 @@ const data = {
   options: {
     args: [{ name: 'version' }]
   },
-  action: ({ msg, args: [ver] }) => {
+  action: ({ args: [ver] }) => {
     const updates = readFileSync('src/data/updates.txt', 'utf8')
     const version = ver && (ver.match(/\./g) || []).length >= 2 ? ver : require(join(process.cwd(), './package.json')).version
     return '```Swift\n' + updates.substring(updates.indexOf(version), updates.indexOf('|', updates.indexOf(version))) + '```'

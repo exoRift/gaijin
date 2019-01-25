@@ -2,12 +2,12 @@ const Command = require('../../modules/command')
 const { replace } = require('../utils')
 
 const data = {
-  name: 'unflip',
-  desc: 'Unflip a string from any direction (Will not unreverse)',
+  name: 'deleet',
+  desc: 'Turn leet speak into letters in text',
   options: {
     args: [{ name: 'text', mand: true }]
   },
-  action: ({ args: [text] }) => replace(text, ['verticalFlip', 'horizontalFlip'], 'base')
+  action: ({ args: [text] }) => replace(text, 'leet', 'leetRef')
 }
 
 module.exports = new Command(data)

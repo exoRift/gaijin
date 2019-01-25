@@ -10,7 +10,7 @@ const data = {
   options: {
     args: [{ name: 'page #' }]
   },
-  action: function ({ client, msg, commands, keys, args: [num = 0] }) {
+  action: function ({ client, commands, keys, args: [num = 0] }) {
     const fields = ['']
     const pkg = require(join(process.cwd(), '/package.json'))
     for (const command of [...commands.values()]) {

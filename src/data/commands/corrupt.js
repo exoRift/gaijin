@@ -7,7 +7,7 @@ const data = {
   options: {
     args: [{ name: 'text', mand: true }]
   },
-  action: ({ msg, args: [text] }) => text.split('').reduce((a, e) => {
+  action: ({ args: [text] }) => text.split('').reduce((a, e) => {
     const rand = Math.floor(Math.random() * 3)
     for (let i = 0; i <= rand; i++) e += corrupt[Math.floor(Math.random() * corrupt.length)]
     return a + e

@@ -10,7 +10,7 @@ const data = {
     return {
       embed: {
         title: 'Bot Status',
-        description: `Pong! Client: **${clientLatency}ms** API: **${shard.latency}ms** | Servers: **${client.guilds.filter(g => g.shard.id === shard.id).length}**`,
+        description: `Pong! Client: **${clientLatency}ms** API: **${shard.latency}ms** | Servers: **${client.guilds.filter((g) => g.shard.id === shard.id).length}**`,
         color: clientLatency > 200 && clientLatency < 300 ? 16776960 : clientLatency > 300 ? 15933733 : 111111,
         author: {
           name: 'Ping',

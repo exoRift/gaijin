@@ -7,7 +7,7 @@ const data = {
   options: {
     args: [{ name: 'text', mand: true }]
   },
-  action: ({ msg, args: [text] }) => text.split('').filter((e) => !vowels.includes(e.toLowerCase())).join('')
+  action: ({ args: [text] }) => text.split('').filter((e) => !vowels.includes(e.toLowerCase())).join('')
 }
 
 module.exports = new Command(data)

@@ -6,7 +6,7 @@ const data = {
   options: {
     args: [{ name: 'replace with', mand: true, delim: '|' }, { name: 'text', mand: true }]
   },
-  action: ({ msg, args: [replace, text] }) => text.replace(/\s/g, replace)
+  action: ({ args: [replace, text] }) => text.replace(/\s/g, replace)
 }
 
 module.exports = new Command(data)

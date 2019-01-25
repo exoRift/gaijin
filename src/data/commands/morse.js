@@ -2,12 +2,12 @@ const Command = require('../../modules/command')
 const { replace } = require('../utils')
 
 const data = {
-  name: 'unflip',
-  desc: 'Unflip a string from any direction (Will not unreverse)',
+  name: 'morse',
+  desc: 'Convert text to Morse Code',
   options: {
     args: [{ name: 'text', mand: true }]
   },
-  action: ({ args: [text] }) => replace(text, ['verticalFlip', 'horizontalFlip'], 'base')
+  action: ({ args: [text] }) => replace(text.toLowerCase(), 'base', 'morse', { delim: ' ' })
 }
 
 module.exports = new Command(data)
