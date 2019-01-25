@@ -84,13 +84,13 @@ class CommandHandler {
    * @param {Message} msg The Discord message.
    */
   async handle (msg) {
-    let text = msg.content.replace(new RegExp(`^<@!?${this._client.user.id}> ?`), this._prefix)
+    let text = this._replaceMentionWithPrefix(msg.content)
     if (!text.startsWith(this._prefix)) return
 
     text = text.substring(this._prefix.length)
     text = this._runReplacers(text)
 
-    let awaited = this._awaits.get(msg.channel.id + msg.author.id)
+    const awaited = this._awaits.get(msg.channel.id + msg.author.id)
     if (awaited && ((Date.now() - awaited.timestamp) > awaited.timeout || !awaited.check({ prefix: this._prefix, msg }))) {
       return awaited.clear()
     }
@@ -135,10 +135,14 @@ class CommandHandler {
     }
   }
 
+  _replaceMentionWithPrefix (content) {
+    return content.replace(new RegExp(`^<@!?${this._client.user.id}> ?`), this._prefix)
+  }
+
   _handleDBRequest (table, id) {
     if (!this._knex) throw Error('QueryBuilder was not supplied to CommandHandler!')
     return this._knex.insert({ table, data: { id } })
-      .catch(ignore => ignore)
+      .catch((ignore) => ignore)
       .finally(() => this._knex.get({ table, where: { id } }))
   }
 
@@ -151,7 +155,7 @@ class CommandHandler {
   _runReplacers (content) {
     return content.replace(/\|(.+?)\|/g, (content, capture) => {
       const split = capture.split(' ')
-      const key = this._keys.find(e => e.start && split.length > 1 ? e.key.startsWith(split[0]) : e.key === capture)
+      const key = this._keys.find((e) => e.start && split.length > 1 ? e.key.startsWith(split[0]) : e.key === capture)
       return key ? key.action({ content, capture }) : 'Invalid Key'
     })
   }
@@ -189,12 +193,10 @@ class CommandHandler {
         const ch = chars[j]
         if (i === (command.args.length - 1)) {
           cleaned[i] += ch
+        } else if (ch === delim) {
+          break
         } else {
-          if (ch === delim) {
-            break
-          } else {
-            cleaned[i] += ch
-          }
+          cleaned[i] += ch
         }
       }
       if (!cleaned[i]) {

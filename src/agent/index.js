@@ -27,7 +27,7 @@ class Agent {
       tables = []
     } = databaseOptions
     const {
-      connectRetryLimit = 5,
+      connectRetryLimit = 10,
       prefix = '!',
       dblToken,
       remindersCheckInterval = 300000
@@ -227,5 +227,5 @@ module.exports = Agent
  * @property {Number} [connectRetryLimit=10]           The maximum number of times to retry connecting to the Discord API.
  * @property {String} [prefix='!']                     The command prefix.
  * @property {String} [dblToken]                       The token used with the DiscordBotsList API.
- * @property {Number} [remindersCheckInterval=3000000] The amoount of time to wait between checking on reminders.
+ * @property {Number} [remindersCheckInterval=3000000] The amount of time to wait between checking on reminders.
  */
