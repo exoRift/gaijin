@@ -18,7 +18,6 @@ jobs:
       - run:
           command: npm run lint
           name: Lint
-          when: always
       - run:
           command: npm run test
           name: Test
