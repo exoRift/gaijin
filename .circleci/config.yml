@@ -1,6 +1,8 @@
 version: 2
 jobs:
   lint:
+    docker:
+      - image: "circleci/node:10.15.0"
     steps:
       - run:
           command: npm run lint
