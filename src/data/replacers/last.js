@@ -1,13 +1,11 @@
 const Replacer = require('../../modules/replacer')
 
 const data = {
-  key: 'DATE',
-  desc: 'Current date',
-  action: () => {
-    const d = Date()
-    // SWITCHING TO EDT
-    const date = new Date(d.substring(0, d.indexOf('GMT') + 4) + '0 (UTC)').toJSON()
-    return date.substring(0, date.length - 8)
+  key: 'LAST',
+  desc: 'Last message sent in channel by bot',
+  action: ({ msg }) => {
+    const lastMessage = msg.channel.lastMessage
+    return lastMessage && lastMessage.content ? lastMessage.content : 'No previous message'
   }
 }
 
