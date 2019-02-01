@@ -117,7 +117,7 @@ class CommandHandler {
       agent: this._agent,
       client: this._client,
       commands: this._commands,
-      keys: this._replacers,
+      replacers: this._replacers,
       msg,
       args,
       [command.dbTable]: dbData,
@@ -148,7 +148,7 @@ class CommandHandler {
     if (!this._knex) throw Error('QueryBuilder was not supplied to CommandHandler!')
     return this._knex.insert({ table, data: { id } })
       .catch((ignore) => ignore)
-      .finally(() => this._knex.get({ table, where: { id } }))
+      .finally(() => this._knex.select({ table, where: { id } }))
   }
 
   /**
