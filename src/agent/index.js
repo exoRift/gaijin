@@ -30,6 +30,7 @@ class Agent {
       connectRetryLimit = 10,
       prefix = '!',
       dblToken,
+      dblWidget = '',
       remindersCheckInterval = 300000
     } = agentOptions
     /**
@@ -54,6 +55,10 @@ class Agent {
      * @type {DBLAPI}
      */
     this._dblAPI = dblToken ? new DBLAPI(dblToken, this._client) : null
+    /**
+     * The DiscordBotsList widget URL.
+     */
+    this._dblWidget = dblWidget
     /**
      * The maximum number of times to retry connecting to the Discord API.
      * @type {Number}
@@ -242,5 +247,6 @@ module.exports = Agent
  * @property {Number} [connectRetryLimit=10]           The maximum number of times to retry connecting to the Discord API.
  * @property {String} [prefix='!']                     The command prefix.
  * @property {String} [dblToken]                       The token used with the DiscordBotsList API.
+ * @property {String} [dblWidget='']                   The URL of your DBL widget.
  * @property {Number} [remindersCheckInterval=3000000] The amount of time to wait between checking on reminders.
  */
