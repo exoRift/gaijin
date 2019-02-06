@@ -1,12 +1,19 @@
 const fs = require('fs')
 const templates = fs.readdirSync('./content/templates', 'utf8')
+const commandNames = fs.readdirSync('../data/commands', 'utf8')
+const commands = []
+for (const command of commandNames) commands.push(require(`../data/commands/${command}.js`))
 for (const template of templates) {
   if (template === 'DBLHTML') { // OTHER TEMPLATES NOT COMPLETE YET
     const settings = require(`./templates/${template}/settings.json`)
     const base = fs.readFileSync(`./content/templates/${template}/base.${settings.type}`, 'utf8')
-    const commands = (require('../data/commands.js'))().commands
-    let replace = ''
-    for (const command in commands) replace += commands[command].private ? '' : settings.template.replace('NAME', command).replace('DESC', commands[command].description)
+    const replace = commands.reduce((a, e, i) => a + (a ? '\n' : '') +
+      e.private
+      ? ''
+      : settings.template
+        .replace('NAME', commandNames[i])
+        .replace('DESC', e.desc)
+    , '')
     const result = base.replace('|REPLACEME|', replace)
     fs.writeFileSync(`./content/${template}.${settings.type}`, result)
   }
