@@ -22,9 +22,6 @@ jobs:
           command: npm run test
           name: Test
           when: always
-      - run:
-          name: Generate Code Coverage
-          command: nyc report --reporter=text-lcov
       - save_cache:
           key: npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
