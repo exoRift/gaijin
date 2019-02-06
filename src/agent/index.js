@@ -80,7 +80,7 @@ class Agent {
    * @param {Number} count The current number of connection attempts.
    */
   connect (count = 0) {
-    console.log(`CONNECTION ATTEMPT #${count + 1}`)
+    console.log(`CONNECTION ATTEMPT ${count + 1}`)
     if (count <= this._connectRetryLimit) return this._client.connect().catch(() => this.connect(count + 1))
     return console.error('RECONNECTION LIMIT REACHED; RECONNECTION CANCELED')
   }
@@ -120,7 +120,7 @@ class Agent {
       ]
     })
     Promise.all(tables.map((table) => this._knex.createTable(table)))
-      .catch((ignored) => ignored)
+      .catch((ignore) => ignore)
       .finally(() => this._knex.delete({
         table: 'users',
         where: {
@@ -134,7 +134,7 @@ class Agent {
     this._client.on('ready', this._onReady.bind(this, this._client))
     this._client.on('error', this._onError.bind(this, this._client))
     this._client.on('messageCreate', this._onCreateMessage.bind(this, this._client))
-    this._client.on('shardDisconnect', this._onShardReady.bind(this, this._client))
+    this._client.on('shardReady', this._onShardReady.bind(this, this._client))
     this._client.on('shardDisconnect', this._onShardDisconnect.bind(this, this._client))
   }
   _setRemindersCheck (remindersCheckInterval) {
@@ -150,7 +150,7 @@ class Agent {
               `__REMINDER__:\n**${reminder.name}**\n${reminder.desc}\n-*${new Date(reminder.date).toString()}*`
             ))
             .then(() => { user.reminders[i] = null })
-            .catch((err) => console.error(`could not dm user with id: ${user.id}: `, err))
+            .catch((err) => console.error(`Could not dm user with id: ${user.id}: `, err))
         }
         const newReminders = user.reminders.filter((reminder) => reminder !== null)
         if (newReminders.length === user.reminders.length) continue
@@ -183,10 +183,9 @@ class Agent {
         }
       })
     } else {
-      console.error(err)
       msg.channel.createMessage('ERR:```\n' + err.message + '```')
         .catch(() => msg.channel.createMessage('`ERROR, SEND TO A BOT ADMIN: `' + Date.now()))
-        .catch((err) => console.error('error in error handler: ', err))
+        .catch((err) => console.error('Error in error handler: ', err))
     }
   }
   _onCreateMessage (client, msg) {
@@ -196,7 +195,7 @@ class Agent {
       .catch((err) => this._handleError(err, msg))
   }
   async _onReady (client) {
-    console.log('ready')
+    console.log('Initializing Command Handler')
     this._commandHandler = new CommandHandler({
       agent: this,
       prefix: this._prefix,
@@ -220,7 +219,7 @@ class Agent {
     this.connect()
   }
   _onError (client, error) {
-    console.error('fuck us', error)
+    console.error('Error has occured', error)
   }
 }
 
