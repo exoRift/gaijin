@@ -7,11 +7,11 @@ for (const template of templates) {
   if (template === 'DBLHTML') { // OTHER TEMPLATES NOT COMPLETE YET
     const settings = require(`./templates/${template}/settings.json`)
     const base = fs.readFileSync(`./content/templates/${template}/base.${settings.type}`, 'utf8')
-    const replace = commands.reduce((a, e, i) => a + (a ? '\n' : '') +
+    const replace = commands.reduce((a, e) => a + (a ? '\n' : '') +
       e.private
       ? ''
       : settings.template
-        .replace('NAME', commandNames[i])
+        .replace('NAME', e.name)
         .replace('DESC', e.desc)
     , '')
     const result = base.replace('|REPLACEME|', replace)
