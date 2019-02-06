@@ -8,7 +8,7 @@ for (const template of templates) {
     const settings = require(`./templates/${template}/settings.json`)
     const base = fs.readFileSync(`./content/templates/${template}/base.${settings.type}`, 'utf8')
     const replace = commands.reduce((a, e) => a + (a ? '\n' : '') +
-      e.private
+      e.restricted
       ? ''
       : settings.template
         .replace('NAME', e.name)

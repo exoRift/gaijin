@@ -183,8 +183,11 @@ class Agent {
         }
       })
     } else {
-      msg.channel.createMessage('ERR:```\n' + err.message + '```')
-        .catch(() => msg.channel.createMessage('`ERROR, SEND TO A BOT ADMIN: `' + Date.now()))
+      msg.channel.createMessage('ERR:```\n' + err.message + '```\n```\n' + err.stack + '```')
+        .catch(() => {
+          console.error(err)
+          msg.channel.createMessage('`ERROR, SEND TO A BOT ADMIN: `' + Date.now())
+        })
         .catch((err) => console.error('Error in error handler: ', err))
     }
   }

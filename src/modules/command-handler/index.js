@@ -50,7 +50,7 @@ class CommandHandler {
      * @type {Map<String, Replacer>}
      */
     this._replacers = new Map()
-    // load some commands
+    // Load commands
     this.loadCommands(commands)
     this.loadReplacers(replacers)
   }
@@ -73,7 +73,7 @@ class CommandHandler {
    * Load replacers.
    * @param {Replacer[]|Replacer} replacers The replacer(s) to load.
    */
-  loadReplacers (replacers) { // FIXME: This is redundant with loadCommands
+  loadReplacers (replacers) {
     if (replacers instanceof Array) {
       for (let i = 0; i < replacers.length; i++) {
         this._loadReplacer(replacers[i])
@@ -104,7 +104,7 @@ class CommandHandler {
     const command = awaited || this._commands.get(keyword)
 
     if (!command) return
-    if (command.restricted && msg.author.id !== this._ownerId) throw Error('This command is either temporarily disabled, or private.')
+    if (command.restricted && msg.author.id !== this._ownerId) throw Error('This command is either temporarily disabled, or restricted.')
 
     args = this._sanitizeArgs(command, args)
     if (command.args && !args) throw Error('Invalid arguments. Reference the help menu.')
@@ -180,13 +180,12 @@ class CommandHandler {
    * @private
    * @param   {Replacer} replacer The replacer to load.
    */
-  _loadReplacer (replacer) { // FIXME: This is redundant with _loadCommand
+  _loadReplacer (replacer) {
     if (!(replacer instanceof Replacer)) throw TypeError('Not a replacer:\n', replacer)
     this._replacers.set(replacer.key, replacer)
   }
 
   _sanitizeArgs (command, args) {
-    const start = Date.now()
     const chars = args.join(' ').split('')
     const cleaned = []
     for (let i = 0; i < command.args.length; i++) {
@@ -208,7 +207,6 @@ class CommandHandler {
         cleaned.pop()
       }
     }
-    console.log(`sanitize args took ${Date.now() - start}ms`)
     return cleaned
   }
   /**

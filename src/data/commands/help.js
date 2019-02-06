@@ -10,19 +10,20 @@ const data = {
   options: {
     args: [{ name: 'page #' }]
   },
-  action: function ({ client, commands, keys, args: [num = 0] }) {
+  action: function ({ client, commands, replacers, args: [num = 0] }) {
     const fields = ['']
     const pkg = require(join(process.cwd(), '/package.json'))
     for (const command of [...commands.values()]) {
-      if (command.private) continue
+      if (command.restricted) continue
       const content = command.info
       let index = fields.length - 1
-      if ((fields[index] + content.length) > 1024) {
-        fields[++index] = ''
+      if ((fields[index] + content).length > 1024) {
+        index++
+        fields[index] = ''
       }
       fields[index] += (fields[index].length ? '\n' : '') + content
     }
-    fields.push('**Keys:**\n*Inputs key values into command `|KEYNAME|` (IN requires a number)*\n\n' + [...keys.values()].reduce((a, e) => `${a}**${e.key}** - *${e.description}*\n`, ''))
+    fields.push('**Replacers:**\n*Inserts live data values into commands. `|REPLACERNAME|` (IN requires a number)*\n\n' + [...replacers.values()].reduce((a, e) => `${a}**${e.key}** - *${e.description}*\n`, ''))
     const embed = {
       title: '*[Click for support]* Made by mets11rap\nDISCLAIMER: If you have an outdated computer, some symbols may not appear correctly. Also, some commands support all characters, while some only support some.',
       description: `${client.user.username} is a text manipulation bot, useful for basic text functions or tools. Click [here](${process.env.DBL_PAGE}) to add me to your server!\n**Note:** The dates used are EDT timezone. [Github](${pkg.repository.url.substring(4)})`,
