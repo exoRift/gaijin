@@ -18,6 +18,7 @@ const data = {
       const type = typeof output === 'object' ? output.constructor.name : typeof output
       result = {
         output: type === 'Promise' ? output : require('util').inspect(output).replace(new RegExp(client.token, 'g'), 'REDACTED'),
+        color: 65280,
         type
       }
     } catch (err) {
