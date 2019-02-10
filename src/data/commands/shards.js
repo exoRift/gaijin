@@ -1,5 +1,5 @@
 const Command = require('../../modules/command')
-const { ping } = require('../links.json')
+const { pingIcon } = require('../utils.js').links
 
 const data = {
   name: 'shards',
@@ -21,7 +21,7 @@ const data = {
         color: averageLatency > 200 && averageLatency < 300 ? 16776960 : averageLatency > 300 ? 15933733 : 111111,
         author: {
           name: 'Pings (API)',
-          icon_url: ping
+          icon_url: pingIcon
         },
         footer: {
           text: `Average ping is ${averageLatency}ms | Total Guilds: ${client.guilds.size}`

@@ -46,6 +46,14 @@ const resources = [
   }
 ]
 
+const links = {
+  ping: 'https://i.imgur.com/SCCJ8qs.gif',
+  helpIcon: 'https://i.imgur.com/By9Gkgq.png',
+  mathKey: 'https://github.com/silentmatt/expr-eval',
+  prefixIcon: 'https://i.imgur.com/x36I58m.png',
+  dblWidget: 'https://discordbots.org/api/widget/449674216531558400.png?topcolor=000000&middlecolor=a00707&certifiedcolor=0d94ba&datacolor=000000&labelcolor=ffffff&highlightcolor=ff0000'
+}
+
 function indices (string, search) {
   const arr = []
   for (let i = string.indexOf(search); i >= 0; i = string.indexOf(search, i + 1)) arr.push(i)
@@ -78,6 +86,7 @@ async function readAndRequireDir (path) {
 module.exports = {
   reference,
   resources,
+  links,
   indices,
   replace,
   msgLinkCompile,

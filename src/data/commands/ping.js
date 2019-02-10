@@ -1,5 +1,5 @@
 const Command = require('../../modules/command')
-const { ping } = require('../links.json')
+const { pingIcon } = require('../utils.js').links
 
 const data = {
   name: 'ping',
@@ -14,7 +14,7 @@ const data = {
         color: clientLatency > 200 && clientLatency < 300 ? 16776960 : clientLatency > 300 ? 15933733 : 111111,
         author: {
           name: 'Ping',
-          icon_url: ping
+          icon_url: pingIcon
         }
       }
     }

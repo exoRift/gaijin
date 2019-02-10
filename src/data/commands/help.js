@@ -2,7 +2,7 @@ const { join } = require('path')
 
 const Command = require('../../modules/command')
 const Await = require('../../modules/await')
-const { prefix, help } = require('../links.json')
+const { prefixIcon, helpIcon } = require('../utils.js').links
 
 const data = {
   name: 'help',
@@ -30,7 +30,7 @@ const data = {
       url: 'https://discord.gg/' + process.env.SUPPORT_SERVER,
       color: 33023,
       footer: {
-        icon_url: prefix,
+        icon_url: prefixIcon,
         text: `Prefix: "${process.env.PREFIX}" or mention | <> = Mandatory () = Optional`
       },
       thumbnail: {
@@ -38,7 +38,7 @@ const data = {
       },
       author: {
         name: `${client.user.username} ${pkg.version} Help`,
-        icon_url: help
+        icon_url: helpIcon
       },
       fields: [
         {

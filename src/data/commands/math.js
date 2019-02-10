@@ -1,11 +1,11 @@
 const evaluator = require('expr-eval').Parser.evaluate
 
 const Command = require('../../modules/command')
-const links = require('../links.json')
+const { mathKey } = require('../utils.js').links
 
 const data = {
   name: 'math',
-  desc: `Solve a math equation | [Symbol Key](${links.mathKey})`,
+  desc: `Solve a math equation | [Symbol Key](${mathKey})`,
   options: {
     args: [{ name: 'text', mand: true }]
   },

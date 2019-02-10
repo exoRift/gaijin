@@ -9,7 +9,7 @@ const {
 
 const {
   dblWidget
-} = require('./src/data/links.json')
+} = require('./src/data/utils.js').links
 
 const agent = new Agent(TOKEN, {
   connectionURL: DATABASE_URL
