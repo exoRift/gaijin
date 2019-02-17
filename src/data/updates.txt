@@ -3,7 +3,8 @@ New code logic (Rewrite)
 Bot is now more efficient and faster
 Added a new command: `googleit`
 Fixed up the help menu a bit
-Entire bot is now tested through continuous integration|
+Entire bot is now tested through continuous integration
+Added new resources for a temporary email and virtual browser|
 0.1.8 \ 12/4/18
 -----
 COMPLETE CODE REWRITE

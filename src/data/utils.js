@@ -18,19 +18,19 @@ const reference = {
 const resources = [
   {
     name: 'RGB Color Picker',
-    link: 'https://www.rapidtables.com/web/color/RGB_Color.html'
+    link: 'https://rapidtables.com/web/color/RGB_Color.html'
   },
   {
     name: 'Hexadecimal Color Picker',
-    link: 'https://www.w3schools.com/colors/colors_mixer.asp'
+    link: 'https://w3schools.com/colors/colors_mixer.asp'
   },
   {
     name: 'Integer Color Picker',
-    link: 'https://www.shodor.org/stella2java/rgbint.html'
+    link: 'https://shodor.org/stella2java/rgbint.html'
   },
   {
     name: 'Text Fonts (Images)',
-    link: 'http://www.flamingtext.com/Free-Logo-Designs'
+    link: 'http://flamingtext.com/Free-Logo-Designs'
   },
   {
     name: 'Discord Embed Creator',
@@ -43,6 +43,14 @@ const resources = [
   {
     name: 'Regex Tester',
     link: 'https://regex101.com'
+  },
+  {
+    name: 'Virtual Browser',
+    link: 'https://browserling.com'
+  },
+  {
+    name: 'Temporary Email',
+    link: 'https://10minutemail.com/10MinuteMail'
   }
 ]
 
