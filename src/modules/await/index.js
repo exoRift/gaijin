@@ -8,9 +8,11 @@ class Await extends Command {
     } = data
     const {
       timeout = 15000,
+      oneTime,
       check = () => true
     } = options
     this.timeout = timeout
+    this.oneTime = oneTime
     this.check = check
   }
 }

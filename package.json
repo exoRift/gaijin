@@ -17,7 +17,7 @@
     "eris": "^0.9.0",
     "expr-eval": "^1.2.2",
     "pg": "^7.8.0",
-    "simple-knex": "^1.0.0-beta.5"
+    "simple-knex": "github:alex-taxiera/simple-knex#newErrors"
   },
   "devDependencies": {
     "ava": "^1.1.0",
@@ -27,7 +27,7 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "nyc": "^13.1.0"
+    "nyc": "^13.3.0"
   },
   "repository": {
     "type": "git",

@@ -43,7 +43,7 @@ class Agent {
      * @type {QueryBuilder}
      */
     this._knex = new QueryBuilder({
-      connectionInfo: connectionURL,
+      connection: connectionURL,
       client: 'pg',
       pool: {
         min: 1,
@@ -99,26 +99,6 @@ class Agent {
   }
 
   _prepareDB (tables) {
-    tables.push({
-      name: 'users',
-      columns: [
-        {
-          name: 'id',
-          type: 'string',
-          primary: true
-        },
-        {
-          name: 'notes',
-          type: 'text',
-          default: '[]'
-        },
-        {
-          name: 'reminders',
-          type: 'text',
-          default: '[]'
-        }
-      ]
-    })
     Promise.all(tables.map((table) => this._knex.createTable(table)))
       .catch((ignore) => ignore)
       .finally(() => this._knex.delete({

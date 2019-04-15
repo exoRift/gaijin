@@ -94,9 +94,10 @@ class CommandHandler {
     text = text.substring(this._prefix.length)
     text = this._runReplacers(text)
 
-    const awaited = this._awaits.get(msg.channel.id + msg.author.id)
-    if (awaited && ((Date.now() - awaited.timestamp) > awaited.timeout || !awaited.check({ prefix: this._prefix, msg }))) {
-      return awaited.clear()
+    let awaited = this._awaits.get(msg.channel.id + msg.author.id)
+    if (awaited && !awaited.check({ prefix: this._prefix, msg })) {
+      if (awaited.oneTime) awaited.clear()
+      awaited = undefined
     }
 
     let args = text.split(' ')
@@ -107,7 +108,7 @@ class CommandHandler {
     if (command.restricted && msg.author.id !== this._ownerId) throw Error('This command is either temporarily disabled, or restricted.')
 
     args = this._sanitizeArgs(command, args)
-    if (command.args && !args) throw Error('Invalid arguments. Reference the help menu.')
+    if (command.args && (!args || args.length < command.args.filter((a) => a.mand).length)) throw Error('Invalid arguments. Reference the help menu.')
     let dbData
     if (command.dbTable) {
       dbData = await this._handleDBRequest(command.dbTable, msg.author.id)
@@ -135,8 +136,11 @@ class CommandHandler {
     } = typeof result === 'string' ? { content: result } : result
 
     if (content || embed || file) {
-      msg.channel.createMessage({ content, embed }, file)
-        .then((rsp) => wait && wait instanceof Await ? this._addAwait(msg, rsp, wait) : null)
+      return msg.channel.createMessage({ content, embed }, file)
+        .then((rsp) => {
+          if (wait && wait instanceof Await) this._addAwait(msg, rsp, wait)
+          return { content, embed, file }
+        })
     }
   }
 
@@ -144,11 +148,10 @@ class CommandHandler {
     return content.replace(new RegExp(`^<@!?${this._client.user.id}> ?`), this._prefix)
   }
 
-  _handleDBRequest (table, id) {
+  async _handleDBRequest (table, id) {
     if (!this._knex) throw Error('QueryBuilder was not supplied to CommandHandler!')
-    return this._knex.insert({ table, data: { id } })
-      .catch((ignore) => ignore)
-      .finally(() => this._knex.select({ table, where: { id } }))
+    await this._knex.insert({ table, data: { id } }).catch((ignore) => ignore)
+    return this._knex.get({ table, where: { id } })
   }
 
   /**
@@ -160,8 +163,10 @@ class CommandHandler {
   _runReplacers (content) {
     return content.replace(/\|(.+?)\|/g, (content, capture) => {
       const split = capture.split(' ')
-      const key = this._keys.find((e) => e.start && split.length > 1 ? e.key.startsWith(split[0]) : e.key === capture)
-      return key ? key.action({ content, capture }) : 'Invalid Key'
+      for (const [key, value] of this._replacers.entries()) {
+        if ((value.start && split.length > 1 && key === split[0]) || key === capture) return value.action({ content, capture })
+      }
+      return 'Invalid Key'
     })
   }
 
@@ -190,21 +195,13 @@ class CommandHandler {
     const cleaned = []
     for (let i = 0; i < command.args.length; i++) {
       const delim = command.args[i].delim || ' '
-      if (!cleaned[i]) {
-        cleaned[i] = ''
-      }
       for (let j = cleaned.join(' ').length; j < chars.length; j++) {
         const ch = chars[j]
-        if (i === (command.args.length - 1)) {
-          cleaned[i] += ch
-        } else if (ch === delim) {
+        if (ch === delim && i !== command.args.length - 1) {
+          if (delim === ' ') chars.splice(j, 1)
           break
-        } else {
-          cleaned[i] += ch
-        }
-      }
-      if (!cleaned[i]) {
-        cleaned.pop()
+        } else if (cleaned[i]) cleaned[i] += ch
+        else cleaned[i] = ch
       }
     }
     return cleaned
@@ -248,6 +245,7 @@ module.exports = CommandHandler
  * @property {Message}  lastResponse The last message the bot sent in regards to this chain.
  * @property {Number}   timestamp    When the await was created.
  * @property {Number}   timeout      How many ms to wait before deleing the await.
+ * @property {Boolean}  oneTime      Decide whether the await gets cleared after an unawaited message.
  * @property {Timeout}  timer        Timeout that will delete the await.
  * @property {Function} clear        A function that will clear the delete timer and delete the await.
  * @property {Function} check        A function to validate a future response.
@@ -259,5 +257,5 @@ module.exports = CommandHandler
  * @property {String}   key      The keyword to replace.
  * @property {String}   desc     A description of what it does.
  * @property {Boolean}  start    Dunno what this is.
- * @property {Function} action   Function returning the string to replace with. (param is an object containing: content, capture)
+ * @property {Function} action   Function returning the string to replace with. (Param is an object containing: content, capture)
  */

@@ -12,7 +12,27 @@ const {
 } = require('./src/data/utils.js').links
 
 const agent = new Agent(TOKEN, {
-  connectionURL: DATABASE_URL
+  connectionURL: DATABASE_URL,
+  tables: [{
+    name: 'users',
+    columns: [
+      {
+        name: 'id',
+        type: 'string',
+        primary: true
+      },
+      {
+        name: 'notes',
+        type: 'text',
+        default: '[]'
+      },
+      {
+        name: 'reminders',
+        type: 'text',
+        default: '[]'
+      }
+    ]
+  }]
 }, {
   prefix: PREFIX,
   dblToken: DBL_TOKEN,

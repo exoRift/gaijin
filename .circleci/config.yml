@@ -22,6 +22,8 @@ jobs:
           command: npm run test
           name: Test
           when: always
+      - store_test_results:
+          path: test-results
       - save_cache:
           key: npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
