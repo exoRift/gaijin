@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: "circleci/node:10.15.0"
+      - image: circleci/postgres:9.6.5-alpine-ram
     environment:
       DATABASE_URL: postgresql://root@localhost/circle_test
     steps:
@@ -22,6 +23,9 @@ jobs:
           command: npm run test
           name: Test
           when: always
+      - run:
+          command: mkdir -p test-results
+          name: Create Test Result Directory
       - store_test_results:
           path: test-results
       - save_cache:
