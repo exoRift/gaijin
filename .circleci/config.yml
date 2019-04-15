@@ -21,12 +21,6 @@ jobs:
           command: npm run test
           name: Test
           when: always
-      - run:
-          command: mkdir -p ~/test-results
-          name: Create Test Result Directory
-          when: always
-      - store_test_results:
-          path: test-results
 workflows:
   version: 2
   testing:

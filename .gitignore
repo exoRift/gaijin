@@ -6,6 +6,5 @@
 node_modules
 # The shell I use for running stuff
 cmd.lnk
-# tests
-coverage
+# Tests
 .nyc_output
