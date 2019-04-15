@@ -11,8 +11,6 @@ jobs:
       - run:
           name: Update NPM
           command: sudo npm i -g npm@latest
-      - restore_cache:
-          key: npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
           name: Install Dependencies
           command: npm i
@@ -24,15 +22,11 @@ jobs:
           name: Test
           when: always
       - run:
-          command: |
-            mkdir -p test-results
+          command: mkdir -p ~/test-results
           name: Create Test Result Directory
+          when: always
       - store_test_results:
           path: test-results
-      - save_cache:
-          key: npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - node_modules
 workflows:
   version: 2
   testing:
