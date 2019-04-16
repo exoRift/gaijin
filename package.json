@@ -13,11 +13,10 @@
   "license": "MIT",
   "dependencies": {
     "ascii-text-generator": "^1.0.5",
+    "cyclone": "git+https://github.com/mets11rap/cyclone.git#dev",
     "dblapi.js": "^2.3.0",
-    "eris": "^0.9.0",
     "expr-eval": "^1.2.2",
-    "pg": "^7.8.0",
-    "simple-knex": "github:alex-taxiera/simple-knex#newErrors"
+    "pg": "^7.8.0"
   },
   "devDependencies": {
     "ava": "^1.1.0",

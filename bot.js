@@ -1,4 +1,4 @@
-const Agent = require('./src/agent')
+const Agent = require('cyclone')
 
 const {
   TOKEN,
@@ -11,8 +11,9 @@ const {
   dblWidget
 } = require('./src/data/utils.js').links
 
-const agent = new Agent(TOKEN, {
+const agent = new Agent(TOKEN, require('./src/data'), {
   connectionURL: DATABASE_URL,
+  client: 'pg',
   tables: [{
     name: 'users',
     columns: [

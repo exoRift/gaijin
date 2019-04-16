@@ -1,4 +1,4 @@
 module.exports = {
-  requireCommands: require('./commands'),
-  requireReplacers: require('./replacers')
+  commands: require('./commands'),
+  replacers: require('./replacers')
 }
