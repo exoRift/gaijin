@@ -80,7 +80,7 @@ function replace (content, find, replace, { splitter = '', delim = '' } = {}) {
 function msgLinkCompile (msg) {
   return `https://discordapp.com/channels/${msg.channel.guild.id}/${msg.channel.id}/${msg.id}`
 }
-// To use in index.js files
+
 async function readAndRequireDir (path) {
   const content = []
   const files = await readdir(path)
